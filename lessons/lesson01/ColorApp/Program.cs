@@ -122,7 +122,8 @@ while (bezi)
                 }
                 else 
                 {
-                    Console.WriteLine($"Slot {numberOfSlotToDiplay}: {slot[numberOfSlotToDiplay - 1]}\n");
+                    string hexColor = slot[numberOfSlotToDiplay - 1].convertColorToHexadecimal(slot[numberOfSlotToDiplay - 1].R, slot[numberOfSlotToDiplay - 1].G, slot[numberOfSlotToDiplay - 1].B);
+                    Console.WriteLine($"Slot {numberOfSlotToDiplay}: {slot[numberOfSlotToDiplay - 1]} ---> {hexColor}\n");
                     break;
                 }
             }
@@ -203,4 +204,12 @@ public class Color
 
     public override string ToString() => $"R={R}, G={G}, B={B}";
     // slot[i] <--- použije Color.ToString(), tohle je TEN výpis z toho
+
+    public string convertColorToHexadecimal(int R, int G, int B)
+    {
+        if (R < 0 || R > 255 || G < 0 || G > 255 || B < 0 || B > 255)
+            throw new ArgumentOutOfRangeException("Values must be in the range of 0–255.");
+
+        return $"#{R:X2}{G:X2}{B:X2}";// X2 znamená, že se hodnota převede na hexadecimální formát a bude mít vždy 2 znaky
+    }
 }
