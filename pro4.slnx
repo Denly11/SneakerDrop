@@ -3,4 +3,7 @@
   <Folder Name="/lessons/lesson01/">
     <Project Path="lessons/lesson01/ColorApp/ColorApp.csproj" Id="f60b06cc-a610-40b8-a424-6ea8f52f6cf8" />
   </Folder>
+  <Folder Name="/lessons/lesson03/">
+    <Project Path="lessons/lesson03/ShopApp/ShopApp.csproj" />
+  </Folder>
 </Solution>
