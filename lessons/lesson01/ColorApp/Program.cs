@@ -2,24 +2,37 @@
 using System.Drawing;
 bool bezi = true;
 int maxSlots = 3;
-List<Color> slot = new List<Color>(maxSlots);//sem budu ukládat barzy, do tech slotů
+//List<Color> slot = new List<Color>(maxSlots);//sem budu ukládat barzy, do tech slotů
+Color?[] slot = new Color?[maxSlots];
 while (bezi)
 {
     Console.WriteLine("Menu\n");
     Console.WriteLine("1. Enter color");
     Console.WriteLine("2. Display saved colors");
-    Console.WriteLine("3.Display specific color by slot");
+    Console.WriteLine("3. Display specific color by slot");
     Console.WriteLine("4. Delete color from slot");
     Console.WriteLine("5. Exit");
 
-    Console.Write("Zvol si moznost: ");
+    Console.Write("Choose an option: ");
     string input = Console.ReadLine();//tady napíše user hodnotu podle toho co chce dělat
                                       //1-5
     Console.WriteLine("\n");
-    if (!int.TryParse(input, out int choice) || choice < 1 || choice > 5)
-    {
-        Console.WriteLine("E");
-        return;
+
+    int choice = 0; 
+    while (true)
+    { 
+        if (!int.TryParse(input, out int choiceInput) || choiceInput < 1 || choiceInput > 5)
+        {
+            Console.WriteLine("Invalid option.");
+            Console.WriteLine("Press any key to try again...");
+            Console.ReadKey();
+            break;
+        }
+        else
+        {
+            choice = choiceInput;
+            break;
+        }
     }
 
     switch (choice)//1-5
@@ -71,60 +84,108 @@ while (bezi)
 
             }
             Color color = new Color(R, G, B);
-            if(slot.Count < maxSlots)
+
+            int freeSlotIndex = 0;//aby to neodpovídalo žádnýmu indexu
+
+            for (int i = 0; i < slot.Length; i++)//tohle prostě projede každý slot po indexech(0-2)
             {
-                slot.Add(color);
-                Console.WriteLine("\nColor saved.");
-                Console.WriteLine("Press any key to continue...");
-                Console.ReadKey();
-                break;
+                if (slot[i] == null)//když je slot prázdný
+                {
+                    slot[i] = color;
+                    Console.WriteLine("\nColor saved.");
+                    break;
+                }
             }
-            else
+            //Console.WriteLine("Could not save color, Slots are full!");
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
+            break;
+
+        //if (slot.Count < maxSlots)
+        //{
+        //    slot.Add(color);
+        //    Console.WriteLine("\nColor saved.");
+        //    Console.WriteLine("Press any key to continue...");
+        //    Console.ReadKey();
+        //    break;
+        //}
+        //else
+        //{
+        //    Console.WriteLine("Could not save color, Slots are full!");
+        //    Console.WriteLine("Press any key to continue...");
+        //    Console.ReadKey();
+        //    break;
+        //}
+        case 2://vypsat všechny barvy
+            for(int i = 0; i < slot.Length; i++)
             {
-                Console.WriteLine("Could not save color, Slots are full!");
-                Console.WriteLine("Press any key to continue...");
-                Console.ReadKey();
-                break;
-            }
-        case 2:
-            if (slot.Count == 0)
-            {
-                Console.WriteLine("Slot is empty.");
-            }
-            else
-            {
-                for (int i = 0; i < slot.Count; i++)
-                {   // slot[i] <--- použije Color.ToString()
+                if(slot[i] == null)
+                {
+                    Console.WriteLine($"Slot {i + 1}: [Empty].");
+                }
+                else
+                {
                     Console.WriteLine($"Slot {i + 1}: {slot[i]}");
                 }
-                Console.WriteLine("Press any key to go bach to menu...");
-                Console.ReadKey();
-                break;
             }
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
             break;
+
+
+            //if (slot.Count == 0)
+            //{
+            //    for(int i = 0; i < maxSlots; i++)
+            //    {
+            //        Console.WriteLine($"Slot {i + 1}: [Empty].");
+            //    }
+            //    Console.WriteLine("\n");
+            //}
+            //else
+            //{
+            //    for (int i = 0; i < slot.Count; i++)
+            //    {   // slot[i] <--- použije Color.ToString()
+            //        Console.WriteLine($"Slot {i + 1}: {slot[i]}");
+            //    }
+            //    for (int i = slot.Count; i < maxSlots; i++)
+            //    {
+            //        Console.WriteLine($"Slot {i + 1}: [Empty]");
+            //    }
+            //    Console.WriteLine("Press any key to go bach to menu...");
+            //    Console.ReadKey();
+            //    break;
+            //}
+            //Console.WriteLine("Press any key to continue...");
+            //Console.ReadKey();
+            //break;
         case 3://zobrazit konkrétní barvu
             int numberOfSlotToDiplay = 0;
             Console.WriteLine("Enter slot number do display(1-3): ");
             while (true)
             {
-               if(!int.TryParse(Console.ReadLine(), out numberOfSlotToDiplay) || numberOfSlotToDiplay < 1 || numberOfSlotToDiplay > 3)
+                if (!int.TryParse(Console.ReadLine(), out numberOfSlotToDiplay) || numberOfSlotToDiplay < 1 || numberOfSlotToDiplay > 3)
                 {
                     Console.WriteLine("Invalid slot number");
                     break;
                 }
-               else if (slot.Count < numberOfSlotToDiplay)
+                else
                 {
-                    Console.WriteLine($"The slot is empty.");
-                    break;
+                    for (int i = 0; i < slot.Length; i++)
+                    {
+                        if (slot[i] == null)//je prázdný(empty), tak...
+                        {
+                            Console.WriteLine($"The slot is empty.");
+                            break;
 
-                }
-                else 
-                {
-                    string hexColor = slot[numberOfSlotToDiplay - 1].convertColorToHexadecimal(slot[numberOfSlotToDiplay - 1].R, slot[numberOfSlotToDiplay - 1].G, slot[numberOfSlotToDiplay - 1].B);
-                    Console.WriteLine($"Slot {numberOfSlotToDiplay}: {slot[numberOfSlotToDiplay - 1]} ---> {hexColor}\n");
-                    break;
+                        }
+                        else//pokud v něm něco je
+                        {
+
+                            string hexColor = slot[numberOfSlotToDiplay - 1].convertColorToHexadecimal(slot[numberOfSlotToDiplay - 1].R, slot[numberOfSlotToDiplay - 1].G, slot[numberOfSlotToDiplay - 1].B);
+                            Console.WriteLine($"Slot {numberOfSlotToDiplay}: {slot[numberOfSlotToDiplay - 1]} ---> {hexColor}\n");
+                            break;
+                        }
+                    }
                 }
             }
             Console.WriteLine("Press any key to go back to menu...");
@@ -140,9 +201,14 @@ while (bezi)
                     Console.WriteLine("Invalid slot number");
                     break;
                 }
+                else if(slot[numberOfSlotToDelete - 1] == null)
+                { 
+                    Console.WriteLine("Slot is empty.");
+                    break;
+                }
                 else
                 {
-                    slot.RemoveAt(numberOfSlotToDelete - 1);
+                    slot[numberOfSlotToDelete - 1] = null;//přepíše na prázdný
                     Console.WriteLine($"Slot {numberOfSlotToDelete} deleted.");
                     break;
                 }
@@ -202,7 +268,7 @@ public class Color
         B = _b;
     }
 
-    public override string ToString() => $"R={R}, G={G}, B={B}";
+    public override string ToString() => $"RGB({R}, {G}, {B})";
     // slot[i] <--- použije Color.ToString(), tohle je TEN výpis z toho
 
     public string convertColorToHexadecimal(int R, int G, int B)
