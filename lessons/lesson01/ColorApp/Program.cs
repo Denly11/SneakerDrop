@@ -4,6 +4,29 @@ bool bezi = true;
 int maxSlots = 3;
 //List<Color> slot = new List<Color>(maxSlots);//sem budu ukládat barzy, do tech slotů
 Color?[] slot = new Color?[maxSlots];
+
+static int  AskForValueInRange(string prompt, int min, int max)
+{
+    while (true)
+    {
+        Console.WriteLine(prompt);
+        if (!int.TryParse(Console.ReadLine(), out var value) || value < min || value > max)
+        {
+            Console.WriteLine("Invalid value.");
+        }
+        else
+        {
+            return value;
+        }
+        
+    }
+}
+static void ClearConsole()
+{
+    Console.WriteLine("Press any key to continue...");
+    Console.ReadKey();
+}
+
 while (bezi)
 {
     Console.WriteLine("Menu\n");
@@ -13,79 +36,80 @@ while (bezi)
     Console.WriteLine("4. Delete color from slot");
     Console.WriteLine("5. Exit");
 
-    Console.Write("Choose an option: ");
-    string input = Console.ReadLine();//tady napíše user hodnotu podle toho co chce dělat
+    //Console.Write("Choose an option: ");
+    //string input = Console.ReadLine();//tady napíše user hodnotu podle toho co chce dělat
                                       //1-5
-    Console.WriteLine("\n");
+    //Console.WriteLine("\n");
 
-    int choice = 0; 
-    while (true)
-    { 
-        if (!int.TryParse(input, out int choiceInput) || choiceInput < 1 || choiceInput > 5)
-        {
-            Console.WriteLine("Invalid option.");
-            Console.WriteLine("Press any key to try again...");
-            Console.ReadKey();
-            break;
-        }
-        else
-        {
-            choice = choiceInput;
-            break;
-        }
-    }
+    //int choice = 0; 
+    //while (true)
+    //{ 
+    //    if (!int.TryParse(input, out int choiceInput) || choiceInput < 1 || choiceInput > 5)
+    //    {
+    //        Console.WriteLine("Invalid option.");
+    //        Console.WriteLine("Press any key to try again...");
+    //        Console.ReadKey();
+    //        break;
+    //    }
+    //    else
+    //    {
+    //        choice = choiceInput;
+    //        break;
+    //    }
+    //}
 
+    int choice = AskForValueInRange("Choose an option (1-5): ", 1, 5);
     switch (choice)//1-5
     {
         case 1://vložit barvu
             Console.Write("\nEnter RGB values");
  
-            int R = 0;
-            int G = 0;
-            int B = 0;
+            int R = AskForValueInRange("Enter Red value (0-255): ", 0, 255);
+            int G = AskForValueInRange("Enter Green value (0-255): ", 0, 255);
+            int B = AskForValueInRange("Enter Blue value (0-255): ", 0, 255);
 
-            while (true)
-            {
-                Console.WriteLine("Red value (0-255): ");
-                if (!int.TryParse(Console.ReadLine(), out R) || R < 0 || R > 255)
-                {//tohle se vykoná vždy ale tělo jen když je výsledek !false(true)
-                    Console.WriteLine("Neplatné číslo");
-                }
-                else
-                {
-                    break;
-                }
+            //while (true)
+            //{
+            //    Console.WriteLine("Red value (0-255): ");
+            //    if (!int.TryParse(Console.ReadLine(), out R) || R < 0 || R > 255)
+            //    {//tohle se vykoná vždy ale tělo jen když je výsledek !false(true)
+            //        Console.WriteLine("Neplatné číslo");
+            //    }
+            //    else
+            //    {
+            //        break;
+            //    }
 
-            }
-            while (true)
-            {
-                Console.WriteLine("Green value (0-255): ");
-                if (!int.TryParse(Console.ReadLine(), out G) || G < 0 || G > 255)
-                {//tohle se vykoná vždy ale tělo jen když je výsledek !false(true)
-                    Console.WriteLine("Neplatné číslo");
-                }
-                else
-                {
-                    break;
-                }
+            //}
+            //while (true)
+            //{
+            //    Console.WriteLine("Green value (0-255): ");
+            //    if (!int.TryParse(Console.ReadLine(), out G) || G < 0 || G > 255)
+            //    {//tohle se vykoná vždy ale tělo jen když je výsledek !false(true)
+            //        Console.WriteLine("Neplatné číslo");
+            //    }
+            //    else
+            //    {
+            //        break;
+            //    }
 
-            }
-            while (true)
-            {
-                Console.WriteLine("Blue value (0-255): ");
-                if (!int.TryParse(Console.ReadLine(), out B) || B < 0 || B > 255)
-                {//tohle se vykoná vždy ale tělo jen když je výsledek !false(true)
-                    Console.WriteLine("Neplatné číslo");
-                }
-                else
-                {
-                    break;
-                }
+            //}
+            //while (true)
+            //{
+            //    Console.WriteLine("Blue value (0-255): ");
+            //    if (!int.TryParse(Console.ReadLine(), out B) || B < 0 || B > 255)
+            //    {//tohle se vykoná vždy ale tělo jen když je výsledek !false(true)
+            //        Console.WriteLine("Neplatné číslo");
+            //    }
+            //    else
+            //    {
+            //        break;
+            //    }
 
-            }
+            //}
             Color color = new Color(R, G, B);
 
-            int freeSlotIndex = 0;//aby to neodpovídalo žádnýmu indexu
+            //int freeSlotIndex = 0;//aby to neodpovídalo žádnýmu indexu
 
             //for (int i = 0; i < slot.Length; i++)//tohle prostě projede každý slot po indexech(0-2)
             //{
@@ -128,8 +152,9 @@ while (bezi)
                 }
             }
             //Console.WriteLine("Could not save color, Slots are full!");
-            Console.WriteLine("Press any key to continue...");
-            Console.ReadKey();
+            //Console.WriteLine("Press any key to continue...");
+            //Console.ReadKey();
+            ClearConsole();
             break;
 
         //if (slot.Count < maxSlots)
@@ -160,8 +185,9 @@ while (bezi)
                     Console.WriteLine($"Slot {i + 1}: {slot[i]} ---> {hexColor}");
                 }
             }
-            Console.WriteLine("Press any key to continue...");
-            Console.ReadKey();
+            //Console.WriteLine("Press any key to continue...");
+            //Console.ReadKey();
+            ClearConsole() ;
             break;
 
 
@@ -191,62 +217,93 @@ while (bezi)
             //Console.ReadKey();
             //break;
         case 3://zobrazit konkrétní barvu
-            int numberOfSlotToDiplay = 0;
-            Console.WriteLine("Enter slot number do display(1-3): ");
-            while (true)
+            //int numberOfSlotToDiplay = 0;
+
+            //Console.WriteLine("Enter slot number do display(1-3): ");
+            int numberOfSlotToDiplay = AskForValueInRange("Enter slot number to display (1-3): ", 1, 3);
+            for (int i = 0; i < slot.Length; i++)
             {
-                if (!int.TryParse(Console.ReadLine(), out numberOfSlotToDiplay) || numberOfSlotToDiplay < 1 || numberOfSlotToDiplay > 3)
+                if (slot[i] == null)//je prázdný(empty), tak...
                 {
-                    Console.WriteLine("Invalid slot number");
+                    Console.WriteLine($"The slot is empty.");
+                    break;
+
+                }
+                else//pokud v něm něco je
+                {
+                    string hexColor = slot[numberOfSlotToDiplay - 1].convertColorToHexadecimal(slot[numberOfSlotToDiplay - 1].R, slot[numberOfSlotToDiplay - 1].G, slot[numberOfSlotToDiplay - 1].B);
+                    Console.WriteLine($"Slot {numberOfSlotToDiplay}: {slot[numberOfSlotToDiplay - 1]} ---> {hexColor}\n");
                     break;
                 }
-                else
-                {
-                    for (int i = 0; i < slot.Length; i++)
-                    {
-                        if (slot[i] == null)//je prázdný(empty), tak...
-                        {
-                            Console.WriteLine($"The slot is empty.");
-                            break;
-
-                        }
-                        else//pokud v něm něco je
-                        {
-
-                            string hexColor = slot[numberOfSlotToDiplay - 1].convertColorToHexadecimal(slot[numberOfSlotToDiplay - 1].R, slot[numberOfSlotToDiplay - 1].G, slot[numberOfSlotToDiplay - 1].B);
-                            Console.WriteLine($"Slot {numberOfSlotToDiplay}: {slot[numberOfSlotToDiplay - 1]} ---> {hexColor}\n");
-                            break;
-                        }
-                    }
-                }
             }
-            Console.WriteLine("Press any key to go back to menu...");
-            Console.ReadKey();
+
+            //while (true)
+            //{
+            //    if (!int.TryParse(Console.ReadLine(), out numberOfSlotToDiplay) || numberOfSlotToDiplay < 1 || numberOfSlotToDiplay > 3)
+            //    {
+            //        Console.WriteLine("Invalid slot number");
+            //        break;
+            //    }
+            //    else
+            //    {
+            //        for (int i = 0; i < slot.Length; i++)
+            //        {
+            //            if (slot[i] == null)//je prázdný(empty), tak...
+            //            {
+            //                Console.WriteLine($"The slot is empty.");
+            //                break;
+
+            //            }
+            //            else//pokud v něm něco je
+            //            {
+
+            //                string hexColor = slot[numberOfSlotToDiplay - 1].convertColorToHexadecimal(slot[numberOfSlotToDiplay - 1].R, slot[numberOfSlotToDiplay - 1].G, slot[numberOfSlotToDiplay - 1].B);
+            //                Console.WriteLine($"Slot {numberOfSlotToDiplay}: {slot[numberOfSlotToDiplay - 1]} ---> {hexColor}\n");
+            //                break;
+            //            }
+            //        }
+            //    }
+            //}
+
+            //Console.WriteLine("Press any key to go back to menu...");
+            //Console.ReadKey();
+            ClearConsole();
             break;
         case 4:
-            int numberOfSlotToDelete = 0;
-            while (true)
+            //int numberOfSlotToDelete = 0;
+            int numberOfSlotToDelete = AskForValueInRange("Enter slot number to delete (1-3): ", 1, 3);
+            if (slot[numberOfSlotToDelete - 1] == null)
             {
-                Console.WriteLine("Choose slot to delete (1-3): ");
-                if (!int.TryParse(Console.ReadLine(), out numberOfSlotToDelete) || numberOfSlotToDelete < 1 || numberOfSlotToDelete > 3)
-                {
-                    Console.WriteLine("Invalid slot number");
-                    break;
-                }
-                else if(slot[numberOfSlotToDelete - 1] == null)
-                { 
-                    Console.WriteLine("Slot is empty.");
-                    break;
-                }
-                else
-                {
-                    slot[numberOfSlotToDelete - 1] = null;//přepíše na prázdný
-                    Console.WriteLine($"Slot {numberOfSlotToDelete} deleted.");
-                    break;
-                }
+                Console.WriteLine("Slot is empty.");
             }
-            Console.WriteLine("Press any key to go back to menu...");
-            Console.ReadKey();
+            else
+            {
+                slot[numberOfSlotToDelete - 1] = null;//přepíše na prázdný
+                Console.WriteLine($"Slot {numberOfSlotToDelete} deleted.");
+            }
+            //while (true)
+            //{
+            //    Console.WriteLine("Choose slot to delete (1-3): ");
+            //    if (!int.TryParse(Console.ReadLine(), out numberOfSlotToDelete) || numberOfSlotToDelete < 1 || numberOfSlotToDelete > 3)
+            //    {
+            //        Console.WriteLine("Invalid slot number");
+            //        break;
+            //    }
+            //    else if(slot[numberOfSlotToDelete - 1] == null)
+            //    { 
+            //        Console.WriteLine("Slot is empty.");
+            //        break;
+            //    }
+            //    else
+            //    {
+            //        slot[numberOfSlotToDelete - 1] = null;//přepíše na prázdný
+            //        Console.WriteLine($"Slot {numberOfSlotToDelete} deleted.");
+            //        break;
+            //    }
+            //}
+            //Console.WriteLine("Press any key to go back to menu...");
+            //Console.ReadKey();
+            ClearConsole();
             break;
         case 5: bezi = false; //exit, ukončí while cyklus
             Console.WriteLine("Exiting...");
@@ -255,7 +312,7 @@ while (bezi)
             Console.WriteLine("Invalid value.");
             break;
     }
-    Console.Clear();
+    Console.Clear();//"vrátí" to program do menu(vzhledově, logicky to je ten while...)
 }
 
     
