@@ -87,12 +87,29 @@ while (bezi)
 
             int freeSlotIndex = 0;//aby to neodpovídalo žádnýmu indexu
 
+            //for (int i = 0; i < slot.Length; i++)//tohle prostě projede každý slot po indexech(0-2)
+            //{
+            //    int 
+            //    if (slot[i] != null)//když je slot prázdný
+            //    {
+            //        slot[i] = color;                                      PROSTĚ KONTROLA ŽE TAM JE NĚJAKÝ MÍSTO
+            //        Console.WriteLine("\nColor saved.");
+            //        break;
+            //    }
+                
+            //}
+
             for (int i = 0; i < slot.Length; i++)//tohle prostě projede každý slot po indexech(0-2)
             {
                 if (slot[i] == null)//když je slot prázdný
                 {
                     slot[i] = color;
                     Console.WriteLine("\nColor saved.");
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Slots are full.");
                     break;
                 }
             }
