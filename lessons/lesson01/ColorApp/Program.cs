@@ -96,21 +96,35 @@ while (bezi)
             //        Console.WriteLine("\nColor saved.");
             //        break;
             //    }
-                
-            //}
 
-            for (int i = 0; i < slot.Length; i++)//tohle prostě projede každý slot po indexech(0-2)
+            //}
+            int freeSlotCount = 0;
+            foreach (var item in slot)
             {
-                if (slot[i] == null)//když je slot prázdný
+                if (item == null)
                 {
-                    slot[i] = color;
-                    Console.WriteLine("\nColor saved.");
+                    freeSlotCount++;//spočítá volné sloty
                     break;
                 }
-                else
+            }
+
+            if(freeSlotCount == 0)//nejsou velný sloty
+            {
+                Console.WriteLine("Could not save color, Slots are full!");
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
+                break;
+            }
+            else
+            { 
+                for (int i = 0; i < slot.Length; i++)//tohle prostě projede každý slot po indexech(0-2)
                 {
-                    Console.WriteLine("Slots are full.");
-                    break;
+                    if (slot[i] == null)//když je slot prázdný
+                    {
+                        slot[i] = color;
+                        Console.WriteLine("\nColor saved.");
+                        break;
+                    }
                 }
             }
             //Console.WriteLine("Could not save color, Slots are full!");
@@ -142,7 +156,8 @@ while (bezi)
                 }
                 else
                 {
-                    Console.WriteLine($"Slot {i + 1}: {slot[i]}");
+                    string hexColor = slot[i].convertColorToHexadecimal(slot[i].R, slot[i].G, slot[i].B);
+                    Console.WriteLine($"Slot {i + 1}: {slot[i]} ---> {hexColor}");
                 }
             }
             Console.WriteLine("Press any key to continue...");
