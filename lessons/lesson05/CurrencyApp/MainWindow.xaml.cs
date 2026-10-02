@@ -35,6 +35,18 @@ public partial class MainWindow : Window
     private void LoadXmlButton_Click(object sender, RoutedEventArgs e)
     {
         // TODO: Show an OpenFileDialog (Microsoft.Win32) for *.xml files.
+        var dialog = new Microsoft.Win32.OpenFileDialog
+        {
+            Filter = "XML files (*.xml)|*.xml|All files (*.*)|*.*",
+            Title = "Choose a CNB rate XML file"
+        };
+
+        if (dialog.ShowDialog() != true)
+            return; // user clicked storno
+
+        // here is the xml file loaded
+        StatusTextBlock.Text = $"Chosen file: {dialog.FileName}";
+
         // TODO: Load the file with CnbXmlParser and show it with ShowRates.
         // TODO: Enable SaveButton and update StatusTextBlock. Handle invalid files.
     }
