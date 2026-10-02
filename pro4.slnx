@@ -6,4 +6,7 @@
   <Folder Name="/lessons/lesson03/">
     <Project Path="lessons/lesson03/ShopApp/ShopApp.csproj" />
   </Folder>
+  <Folder Name="/lessons/lesson05/">
+    <Project Path="lessons/lesson05/CurrencyApp/CurrencyApp.csproj" />
+  </Folder>
 </Solution>
