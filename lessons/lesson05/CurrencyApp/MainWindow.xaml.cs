@@ -34,21 +34,28 @@ public partial class MainWindow : Window
     /// </summary>
     private void LoadXmlButton_Click(object sender, RoutedEventArgs e)
     {
-        // TODO: Show an OpenFileDialog (Microsoft.Win32) for *.xml files.
-        var dialog = new Microsoft.Win32.OpenFileDialog
+        try{
+            var dialog = new Microsoft.Win32.OpenFileDialog
+            {
+                Filter = "XML files (*.xml)|*.xml",//to (*.xml) je (jenom) název filtru
+                Title = "Choose a CNB rate XML file"
+            };
+
+
+            if (dialog.ShowDialog() != true)//user clicked storno
+                return;
+
+            var rates =CnbXmlParser.Load(dialog.FileName);
+            ShowRates(rates);
+
+            SaveButton.IsEnabled = true;
+            StatusTextBlock.Text = $"Chosen file: {dialog.FileName}";
+        }
+        catch (Exception ex)
         {
-            Filter = "XML files (*.xml)|*.xml|All files (*.*)|*.*",
-            Title = "Choose a CNB rate XML file"
-        };
-
-        if (dialog.ShowDialog() != true)
-            return; // user clicked storno
-
-        // here is the xml file loaded
-        StatusTextBlock.Text = $"Chosen file: {dialog.FileName}";
-
-        // TODO: Load the file with CnbXmlParser and show it with ShowRates.
-        // TODO: Enable SaveButton and update StatusTextBlock. Handle invalid files.
+            MessageBox.Show($"Error loading XML file: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        
     }
 
     /// <summary>
@@ -57,6 +64,15 @@ public partial class MainWindow : Window
     private void SaveButton_Click(object sender, RoutedEventArgs e)
     {
         // TODO: Save _displayedRates with _storage and select the saved day in the list.
+        if (_displayedRates != null)// _displayedRates obsahuje datum toho zobrazenýho dne
+            _storage.Save(_displayedRates);//storage je objekt třídy RatesStorage(LoadAll a Save metody)
+            RefreshSavedDays(_displayedRates.Date);//zobrazí den podle toho co je v UI prvku(pro výber datumu) vybráno
+            StatusTextBlock.Text = $"Uloženo: {_displayedRates.Date:dd.MM.yyyy}";
+            SaveButton.IsEnabled = false;//vypne save button
+
+            //až pro part 2 IG
+            _hasUnsavedRates = false;//vše je uloženo
+    })
     }
 
     /// <summary>
@@ -65,6 +81,11 @@ public partial class MainWindow : Window
     private void SavedDaysListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         // TODO: Show the selected DailyRates (SavedDaysListBox.SelectedItem).
+        var selectedDay = SavedDaysListBox.SelectedItem as DailyRates;
+        if (selected is null)
+            return;
+
+        ShowRates(selected);
         // TODO: Part 2 – enable DeleteButton.
     }
 
@@ -74,6 +95,17 @@ public partial class MainWindow : Window
     private void RefreshSavedDays(DateTime? dateToSelect = null)
     {
         // TODO: Load all days from _storage and bind them to SavedDaysListBox.ItemsSource.
+        var SavedDays = _storage.LoadAll();//pokud to existuje tak tu mám ready list 
+        SavedDaysListBox.ItemsSource = SavedDays;//sem se ten list propíše
+
+        if (dateToSelect is null)
+            return;
+
+        var selectedDay = SavedDays.FirstOrDefault(d => d.Date.Date == dateToSelect.Value.Date);
+        //FirstOrDefault vezme první prvek co splnuje podmínku
+        //lambda je ta podmínka a říká datum prvku ("d") je stejný jako to co je v poli na vybrání datumu 
+        if (selectedDay != null)//pokud výber něníprázdnej zobraz to tam
+            SavedDaysListBox.SelectedItem = selectedDay;
     }
 
     /// <summary>
@@ -83,8 +115,15 @@ public partial class MainWindow : Window
     private void ShowRates(DailyRates rates, DateTime? requestedDate = null)
     {
         // TODO: Remember the rates in _displayedRates, fill DateTextBlock and RatesDataGrid.ItemsSource.
+
+        _displayedRates = rates;
+        DateTextBlock.Text = $"Kurzy ČNB pro {rates.Date:dd.MM.yyyy}";
+        RatesDataGrid.ItemsSource = rates.Rates;
+
+
         // TODO: Part 2 – fill InfoTextBlock (downloaded at, age, Id), WarningTextBlock and
         //       CurrencyComboBox, then call ApplyFilter instead of setting the grid directly.
+
     }
 
     // ==================================================================

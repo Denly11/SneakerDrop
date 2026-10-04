@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Xml.Linq;
 using CurrencyApp.Models;
 
 namespace CurrencyApp.Services;
@@ -7,7 +9,7 @@ namespace CurrencyApp.Services;
 /// </summary>
 public static class CnbXmlParser
 {
-    public static DailyRates Load(string filePath)
+    public static DailyRates Load(string filePath)//návratový typ je tady  třída DailyRates
     {
         var xmlFile = XDocument.Load(filePath);//Xdocument třída pro prácí s xml soubory
         var culture = new CultureInfo("cs-CZ");//objekt s českými pravidly pro formátování dat a čísel
