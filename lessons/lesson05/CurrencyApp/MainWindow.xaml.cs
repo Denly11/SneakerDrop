@@ -65,6 +65,7 @@ public partial class MainWindow : Window
     {
         // TODO: Save _displayedRates with _storage and select the saved day in the list.
         if (_displayedRates != null)// _displayedRates obsahuje datum toho zobrazenýho dne
+        {
             _storage.Save(_displayedRates);//storage je objekt třídy RatesStorage(LoadAll a Save metody)
             RefreshSavedDays(_displayedRates.Date);//zobrazí den podle toho co je v UI prvku(pro výber datumu) vybráno
             StatusTextBlock.Text = $"Uloženo: {_displayedRates.Date:dd.MM.yyyy}";
@@ -72,7 +73,7 @@ public partial class MainWindow : Window
 
             //až pro part 2 IG
             _hasUnsavedRates = false;//vše je uloženo
-    })
+        }
     }
 
     /// <summary>
@@ -82,10 +83,10 @@ public partial class MainWindow : Window
     {
         // TODO: Show the selected DailyRates (SavedDaysListBox.SelectedItem).
         var selectedDay = SavedDaysListBox.SelectedItem as DailyRates;
-        if (selected is null)
+        if (selectedDay is null)
             return;
 
-        ShowRates(selected);
+        ShowRates(selectedDay);
         // TODO: Part 2 – enable DeleteButton.
     }
 

@@ -1,4 +1,5 @@
 using System.IO;
+using System.Text.Json;
 using CurrencyApp.Models;
 
 namespace CurrencyApp.Services;
@@ -49,7 +50,7 @@ public class RatesStorage
         all.Add(dailyRates);
 
         var directory = Path.GetDirectoryName(_filePath);//najde cestu od kud je soubor
-        if (!string.IsNullOrEmpty(directory)//pokud tam nějaká cesta je, directory není prázdný string
+        if (!string.IsNullOrEmpty(directory))//pokud tam nějaká cesta je, directory není prázdný string
             Directory.CreateDirectory(directory);//pokud ta složka ještě neexistuje tak ji vytvoří(tak funguje CreateDirectory)
         //  TEPRVE SE TEN SOUBOR VYTVOŘÍ DLE "filePath"
 
@@ -62,3 +63,4 @@ public class RatesStorage
 
         File.WriteAllText(_filePath, json);//zapíše text z jsonu do souboru, vytvoří ho(soubor) pokud neexistuje
     }
+}
