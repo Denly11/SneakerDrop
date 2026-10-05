@@ -4,7 +4,7 @@ Vytvořte **WPF aplikaci** pro práci s kurzy měn, které každý pracovní den
 vyhlašuje Česká národní banka (ČNB).
 
 Projekt **CurrencyApp** obsahuje hotové UI a prázdné metody na obsluhu událostí.
-Můžete využít již připravené třídy v složkách Models a Services.
+Můžete využít již připravené třídy v složkách Models a Services.ok
 Třídy si můžete upravit, přidat nové, nebo si vytvořit vlastní.
 
 > Kód i názvy pište **anglicky**.
