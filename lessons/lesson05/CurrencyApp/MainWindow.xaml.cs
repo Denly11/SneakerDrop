@@ -11,7 +11,7 @@ public partial class MainWindow : Window
     private const int RandomDayMaxDaysBack = 365;
 
     private readonly RatesStorage _storage = new(Path.Combine(AppContext.BaseDirectory, "rates.json"));
-    // private readonly CnbClient _cnbClient = new();
+    private readonly CnbClient _cnbClient = new();//komunikace(stahování) s cnb webem
 
     /// <summary>Rates currently shown in the UI (loaded, downloaded or saved).</summary>
     private DailyRates? _displayedRates;
@@ -68,7 +68,7 @@ public partial class MainWindow : Window
         {
             _storage.Save(_displayedRates);//storage je objekt třídy RatesStorage(LoadAll a Save metody)
             RefreshSavedDays(_displayedRates.Date);//zobrazí den podle toho co je v UI prvku(pro výber datumu) vybráno
-            StatusTextBlock.Text = $"Uloženo: {_displayedRates.Date:dd.MM.yyyy}";
+            StatusTextBlock.Text = $"Downloaded: {_displayedRates.Date:dd.MM.yyyy}";
             SaveButton.IsEnabled = false;//vypne save button
 
             //až pro part 2 IG
@@ -118,7 +118,7 @@ public partial class MainWindow : Window
         // TODO: Remember the rates in _displayedRates, fill DateTextBlock and RatesDataGrid.ItemsSource.
 
         _displayedRates = rates;
-        DateTextBlock.Text = $"Kurzy ČNB pro {rates.Date:dd.MM.yyyy}";
+        DateTextBlock.Text = $"Rates ČNB for {rates.Date:dd.MM.yyyy}";
         RatesDataGrid.ItemsSource = rates.Rates;
 
 
@@ -137,6 +137,7 @@ public partial class MainWindow : Window
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
         // TODO: Select DateTime.Today in RatesDatePicker.
+        RatesDatePicker.SelectedDate = DateTime.Today;
     }
 
     private void PreviousDayButton_Click(object sender, RoutedEventArgs e)
@@ -152,6 +153,7 @@ public partial class MainWindow : Window
     private void TodayButton_Click(object sender, RoutedEventArgs e)
     {
         // TODO: Select DateTime.Today.
+        RatesDatePicker.SelectedDate = DateTime.Today;
     }
 
     private void RandomDayButton_Click(object sender, RoutedEventArgs e)
@@ -165,15 +167,37 @@ public partial class MainWindow : Window
     private async void RatesDatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
     {
         // TODO: Download the rates for RatesDatePicker.SelectedDate (DownloadRatesAsync).
+        if (RatesDatePicker.SelectedDate.HasValue)
+        {
+            await DownloadRatesAsync(RatesDatePicker.SelectedDate.Value);
+        }
     }
 
     /// <summary>
     /// Downloads the rates for the given date and shows them. Handles network errors.
     /// </summary>
-    private Task DownloadRatesAsync(DateTime date)
+    private async Task DownloadRatesAsync(DateTime date)
     {
         // TODO: Use SetBusy, _cnbClient.GetRatesAsync and ShowRates; catch HttpRequestException etc.
-        throw new NotImplementedException();
+        try
+        {
+            SetBusy(true);
+
+            var rates = await _cnbClient.GetRatesAsync(date);//vezme xml z webu cnb pro to datum a převede ho na objekt třídy DailyRates
+            ShowRates(rates, date);//zobrazí obejkt a datum
+
+            SaveButton.IsEnabled = true;//ted to JDE uložit, protože tam něco je, načetlí
+            StatusTextBlock.Text = $"Dowloaded from ČNB: {rates.Date:dd.MM.yyyy}";
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error downloading rates: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        finally
+        {
+            SetBusy(false);
+        }
+        
     }
 
     /// <summary>
@@ -182,6 +206,8 @@ public partial class MainWindow : Window
     private void SetBusy(bool isBusy)
     {
         // TODO: Toggle ToolbarPanel.IsEnabled and BusyProgressBar.Visibility.
+        ToolbarPanel.IsEnabled = !isBusy;
+        BusyProgressBar.Visibility = isBusy ? Visibility.Visible : Visibility.Collapsed;//zobrazí pokud je isBusy true
     }
 
     // ==================================================================
@@ -232,4 +258,10 @@ public partial class MainWindow : Window
     {
         // TODO: Parse the amount, use CurrencyConverter.ToCzk and fill the result text blocks.
     }
-}
+
+    private static bool IsWorkday(DateTime date)
+    {
+        return date.DayOfWeek != DayOfWeek.Saturday && date.DayOfWeek != DayOfWeek.Sunday;//pokud ten den není sobota ani neděle
+        //ten celej výraz za return má nějakou hodotu podle toho je jestli je tomu výrazu vyhověno či nikoliv potom to vrátí false
+        //wooooooo
+    }
