@@ -23,14 +23,14 @@ Cílem je naučit se číst a posílat HTTP požadavky a rozumět odpovědím se
 
 **a)** Otevřete v prohlížeči nástroje pro vývojáře (F12) na záložce *Network* a pak načtěte `<server>/hello`. U požadavku zapište:
 
-- Metoda:
-- Celá URL:
-- Status kód:
-- Verze protokolu (sloupec *Protocol* zapnete pravým kliknutím na záhlaví tabulky):
+- Metoda: **GET**
+- Celá URL: **https://http-api-646982638495.europe-west1.run.app/hello**
+- Status kód: **200**
+- Verze protokolu (sloupec *Protocol* zapnete pravým kliknutím na záhlaví tabulky): h3
 - Alespoň 3 hlavičky **požadavku**, které prohlížeč poslal sám od sebe, aniž jste je zadali:
 
 ```text
-
+Authority; Method; Path
 ```
 
 **b)** Takto vypadá celá komunikace s endpointem `POST /echo` v textové podobě. Zachytil ji nástroj cURL příkazem `curl -v <server>/echo -H "Content-Type: application/json" -d '{"name": "Test", "value": 123}'`.
@@ -62,35 +62,35 @@ Transfer-Encoding: chunked
 
 Z jakých tří částí se skládá první řádek požadavku a z jakých tří částí první řádek odpovědi?
 
-- První řádek požadavku:
-- První řádek odpovědi:
+- První řádek požadavku: **http metoda, cesta, verze http**
+- První řádek odpovědi: **verze http, stavový kód, popis stavového kódu**
 
 Jak souvisí hodnota `Content-Length: 30` s tělem požadavku?
 
-*Odpověď:*
+*Odpověď:* **délka těla**
 
 Co odděluje hlavičky od těla zprávy?
 
-*Odpověď:*
+*Odpověď:* **prázdný řádek**
 
 Která hlavička požadavku říká serveru, v jakém formátu je tělo, a která říká, jaký formát odpovědi klient přijme?
 
-- Formát těla:
-- Přijímaný formát odpovědi:
+- Formát těla: **Content-Type**
+- Přijímaný formát odpovědi: **Accept**
 
 ## 2. GET /hello
 
 Pošlete požadavek z Hoppscotche. Zapište status kód, hodnotu hlavičky `Content-Type` a celé tělo odpovědi. Pošlete požadavek znovu po několika sekundách: která část odpovědi se změnila?
 
-- Status kód:
-- `Content-Type`:
-- Tělo odpovědi:
+- Status kód: **200**
+- `Content-Type`: **text/plain; charset=utf-8**
+- Tělo odpovědi: **nemá**
 
 ```text
 
 ```
 
-- Část odpovědi, která se změnila:
+- Část odpovědi, která se změnila: **čas**
 
 ## 3. GET /page
 
