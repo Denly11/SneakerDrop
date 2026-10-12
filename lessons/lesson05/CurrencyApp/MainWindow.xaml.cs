@@ -142,12 +142,34 @@ public partial class MainWindow : Window
 
     private void PreviousDayButton_Click(object sender, RoutedEventArgs e)
     {
-        // TODO: Select the previous workday in RatesDatePicker.
+        DateTime current = (RatesDatePicker.SelectedDate ?? DateTime.Today).Date;//pokud není vybrané datum vezme dnešní
+        //.Date to převede ČAS(ne datum) nastaví na 00:00:00
+        DateTime previous = current.AddDays(-1);//bud oddedneška nebo od vybranýho dne, to postune o 1
+        //metoda přičte dny
+
+        while (!IsWorkday(previous))
+        {//není to víkend = TRUE / je to pracovní den = TRUE, pokud to je pracovní den tak se to ani nestuptí, pokud to je víken tak se to vikoná znovu,
+         //pak to pro ten den zas zkonroluje jestli to už je pracovní den, pokud ano hodnota je TRUE a ! z toho udělá FALSE
+            previous = previous.AddDays(-1);
+        }
+
+        RatesDatePicker.SelectedDate = previous;
     }
 
     private void NextDayButton_Click(object sender, RoutedEventArgs e)
     {
-        // TODO: Select the next workday, but never a date in the future.
+        DateTime current = (RatesDatePicker.SelectedDate ?? DateTime.Today).Date;
+        DateTime next = current.AddDays(1);
+
+        while (!IsWorkday(next))
+        {
+            next = next.AddDays(1);
+        }
+
+        if (next <= DateTime.Today)
+        {
+            RatesDatePicker.SelectedDate = next;
+        }
     }
 
     private void TodayButton_Click(object sender, RoutedEventArgs e)
@@ -262,6 +284,6 @@ public partial class MainWindow : Window
     private static bool IsWorkday(DateTime date)
     {
         return date.DayOfWeek != DayOfWeek.Saturday && date.DayOfWeek != DayOfWeek.Sunday;//pokud ten den není sobota ani neděle
-        //ten celej výraz za return má nějakou hodotu podle toho je jestli je tomu výrazu vyhověno či nikoliv potom to vrátí false
-        //wooooooo
+        //ten celej výraz za return má nějakou hodnotu podle toho je jestli je tomu výrazu vyhověno či nikoliv potom to vrátí false
     }
+}

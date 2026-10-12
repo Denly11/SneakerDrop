@@ -39,8 +39,5 @@ public static class CnbXmlParser
         }
 
         return result;//objekt ve kterám je datum a sloupky s kodem menou zemí mnozstvim a kurzem
-
-
-        //throw new NotImplementedException(); už je
     }
 }
