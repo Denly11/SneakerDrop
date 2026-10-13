@@ -135,7 +135,7 @@ Zapište status kód, hodnotu `Content-Type` a celé tělo odpovědi. (Výsledek
 
 Nepotřebné řádky nechte prázdné.
 
-- `Location` u prvního požadavku:
+- `Location` u prvního požadavku: **/data-temp**
 
 **b)** Jaká URL je po načtení v adresním řádku?
 
@@ -168,13 +168,13 @@ Ale ted jsem to otevřel v anonymním okně a jde to...
 
 Nepotřebné řádky nechte prázdné.
 
-- `Location` u prvního požadavku:
+- `Location` u prvního požadavku: **/permanent-storage**
 
 **b)** Načtěte `<server>/permanent` v prohlížeči ještě jednou (zadejte adresu znovu do adresního řádku). Co se teď u požadavku `/permanent` zobrazí ve sloupcích *Status* a *Size*? Odkud prohlížeč odpověď vzal?
 
 - *Status*: **200**
-- *Size*: **není tam to pole ani ten paket**
-- Odkud prohlížeč odpověď vzal:**no sprvávně by ji vzal z data**
+- *Size*: **0.1kB**
+- Odkud prohlížeč odpověď vzal: **vzal přesměrování z cache a rovnou načetl /permanent-storage**
 
 **c)** Porovnejte status kódy prvních požadavků z úkolů 5a a 6a. Jaký je mezi nimi rozdíl z pohledu prohlížeče?
 
@@ -184,16 +184,17 @@ Nepotřebné řádky nechte prázdné.
 
 Otevřete `<server>/file` v prohlížeči s otevřenými DevTools. Zapište hodnoty hlaviček odpovědi `Content-Type` a `Content-Disposition`, název staženého souboru a jeho celý obsah. Která hlavička způsobí, že prohlížeč soubor stáhne místo toho, aby ho zobrazil?
 
-- `Content-Type`:
-- `Content-Disposition`:
-- Název staženého souboru:
+- `Content-Type`: **text/plain**
+- `Content-Disposition`: attachment; filename=sample.txt; filename*=UTF-8''sample.txt
+- Název staženého souboru: **sample.txt**
 - Obsah souboru:
 
 ```text
-
+This is a sample file content.
+Downloaded at: 10/13/2026 15:02:27
 ```
 
-- Hlavička, která způsobí stažení:
+- Hlavička, která způsobí stažení: **content-disposition**
 
 ## 8. POST /echo
 
@@ -207,19 +208,19 @@ Posílejte z Hoppscotche. U každé varianty zapište status kód (číslo i ná
 Tělo, které jste poslali ve variantě b):
 
 ```json
-
+{"name": "Test", "value": 123, "bonita": "výborná"}
 ```
 
 | Varianta | Status kód | Tělo odpovědi |
 | --- | --- | --- |
-| a) | | |
-| b) | | |
-| c) | | |
-| d) | | |
+| a) | **200**| **{ "name": "Test", "value": 123 }** |
+| b) | **200** | **{ "name": "Test", "value": 123, "bonita": "výborná" }**|
+| c) | **415** | **nic** |
+| d) | **200**| **"{\"name\": Test}"** |
 
 Porovnejte odpovědi variant c) a d) s variantou a). Na čí straně je podle status kódu příčina: u klienta, nebo u serveru?
 
-*Odpověď:*
+*Odpověď:* **u c to je nepodporovaný typ obsahu a u d je to špatné tělo**
 
 ## 9. POST /status/{kód}
 
@@ -227,14 +228,14 @@ Z Hoppscotche pošlete na každou adresu prázdné tělo `{}` s typem obsahu `ap
 
 | Adresa | Status kód | Tělo odpovědi |
 | --- | --- | --- |
-| `/status/200` | | |
-| `/status/201` | | |
-| `/status/400` | | |
-| `/status/401` | | |
-| `/status/403` | | |
-| `/status/404` | | |
-| `/status/500` | | |
-| `/status/XXX` (XXX zvolte z rozsahu 600–999) | | |
+| `/status/200` | **200 OK** | **{"message": "Success","body": null}** |
+| `/status/201` | **201 Created** | {"message": "Created", "body": null}|
+| `/status/400` | **400 Bad Request**| **{  "error": "Bad Request",  "body": null}** |
+| `/status/401` | **401 Unauthorized**| **nic** |
+| `/status/403` | **403 Forbiden**| **nic** |
+| `/status/404` | **404 Not Found** | **{ "error": "Not Found"}** |
+| `/status/500` | **500 Internal Server Error**| **{"type": "https://tools.ietf.org/html/rfc9110#section-15.6.1",  "title": "An error occurred while processing your request.""status":500, "detail": "Internal Server Error"}** |
+| `/status/XXX` (XXX zvolte z rozsahu 600–999) | **404 Not Found** | **nic** |
 
 Dále zapište:
 
