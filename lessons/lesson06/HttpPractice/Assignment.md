@@ -84,10 +84,10 @@ Pošlete požadavek z Hoppscotche. Zapište status kód, hodnotu hlavičky `Cont
 
 - Status kód: **200**
 - `Content-Type`: **text/plain; charset=utf-8**
-- Tělo odpovědi: **nemá**
+- Tělo odpovědi: 
 
-```text
-
+```text 
+nemá
 ```
 
 - Část odpovědi, která se změnila: **čas**
@@ -96,25 +96,29 @@ Pošlete požadavek z Hoppscotche. Zapište status kód, hodnotu hlavičky `Cont
 
 **a)** Pošlete požadavek z Hoppscotche. Zapište hodnotu hlavičky `Content-Type`, přesný text v elementu `<title>` a text nadpisu `<h1>`.
 
-- `Content-Type`:
-- Text v `<title>`:
-- Text v `<h1>`:
+*to je teda ASI teda pro tu adresu ze zadání...*
+- `Content-Type`: **application/json || text/html**
+- Text v `<title>`: **nic tam není/pokud pro poskytnutou adresu: Welcome Page**
+- Text v `<h1>`: **taky není /--||-- Welcome to the page!**
 
 **b)** Otevřete stejnou adresu v prohlížeči. Popište, čím se zobrazení liší od Hoppscotche. Která hlavička prohlížeči říká, že má obsah vykreslit jako HTML stránku?
 
-- Rozdíl v zobrazení:
-- Hlavička:
+- Rozdíl v zobrazení: **grafická interpretace kódu co tam byl vypsaný**
+- Hlavička: **Content-Type**
 
 ## 4. GET /butterfly
 
 Zapište status kód, hodnotu `Content-Type` a celé tělo odpovědi. (Výsledek budete potřebovat v úkolu 17.)
 
-- Status kód:
-- `Content-Type`:
+- Status kód: **404**
+- `Content-Type`: **application/json; charset=utf-8**
 - Tělo odpovědi:
 
 ```text
-
+{
+  "error": "Butterfly not found",
+  "code": 404
+}
 ```
 
 ## 5. GET /data
@@ -125,8 +129,8 @@ Zapište status kód, hodnotu `Content-Type` a celé tělo odpovědi. (Výsledek
 
 | # | URL | Status kód |
 | --- | --- | --- |
-| 1 | | |
-| 2 | | |
+| 1 | https://http-api-646982638495.europe-west1.run.app/data | 302 | 
+| 2 | https://http-api-646982638495.europe-west1.run.app/data-temp | 200 |
 | 3 | | |
 
 Nepotřebné řádky nechte prázdné.
@@ -135,17 +139,22 @@ Nepotřebné řádky nechte prázdné.
 
 **b)** Jaká URL je po načtení v adresním řádku?
 
-*Odpověď:*
+*Odpověď:* **https://http-api-646982638495.europe-west1.run.app/data-temp**
+
+___
+**!** Já si myslím že je něco špatně, nejdřív mi to načítalo /data a vracelo data a pakto switchnulo na /data-temp a vracelo data-temp ale hádám že bych měl vidět obě ale ted už se mi ty data prsotě nezobrazují
+Ale ted jsem to otevřel v anonymním okně a jde to...
 
 **c)** Pošlete `GET /data` z Hoppscotche. Jaký status kód a jaký obsah zobrazí? Porovnejte je s prvním požadavkem z a) a vysvětlete rozdíl.
 
-- Status kód:
-- Obsah:
-- Vysvětlení rozdílu:
+- Status kód: **200**
+- Obsah: **"message": "Temporary response",
+  "id": "54f2c220-7a07-436f-abe3-bcc1239d02c1"**
+- Vysvětlení rozdílu:**už se to načítá rovnou to /data-temp a ne /data**
 
 **d)** Ze kterého endpointu obsah ve skutečnosti pochází?
 
-*Odpověď:*
+*Odpověď:* **z data**
 
 ## 6. GET /permanent
 
@@ -153,8 +162,8 @@ Nepotřebné řádky nechte prázdné.
 
 | # | URL | Status kód |
 | --- | --- | --- |
-| 1 | | |
-| 2 | | |
+| 1 | https://http-api-646982638495.europe-west1.run.app/permanent | 301 |
+| 2 | https://http-api-646982638495.europe-west1.run.app/permanent-storage | 200 |
 | 3 | | |
 
 Nepotřebné řádky nechte prázdné.
@@ -163,13 +172,13 @@ Nepotřebné řádky nechte prázdné.
 
 **b)** Načtěte `<server>/permanent` v prohlížeči ještě jednou (zadejte adresu znovu do adresního řádku). Co se teď u požadavku `/permanent` zobrazí ve sloupcích *Status* a *Size*? Odkud prohlížeč odpověď vzal?
 
-- *Status*:
-- *Size*:
-- Odkud prohlížeč odpověď vzal:
+- *Status*: **200**
+- *Size*: **není tam to pole ani ten paket**
+- Odkud prohlížeč odpověď vzal:**no sprvávně by ji vzal z data**
 
 **c)** Porovnejte status kódy prvních požadavků z úkolů 5a a 6a. Jaký je mezi nimi rozdíl z pohledu prohlížeče?
 
-*Odpověď:*
+*Odpověď:* **302 je dočasné přesměrování a 301 trvalé přesměrování**
 
 ## 7. GET /file
 
