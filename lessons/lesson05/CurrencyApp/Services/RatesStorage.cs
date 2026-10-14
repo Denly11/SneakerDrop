@@ -19,7 +19,7 @@ public class RatesStorage
     public List<DailyRates> LoadAll()//vrací list objektů třídy DailyRates
     {
         if (!File.Exists(_filePath))//pokud neexistuje
-            return [];//[] jsou zkratka pro new List<DailyRates>(), čili kniž to neexistije vrátí to prázdný list
+            return [];//[] jsou zkratka pro new List<DailyRates>(), čili když to neexistije vrátí to prázdný list
 
         var json = File.ReadAllText(_filePath);//pokud existuje
 
@@ -62,5 +62,15 @@ public class RatesStorage
         // WriteIndented je hezky odsazené a čitelné
 
         File.WriteAllText(_filePath, json);//zapíše text z jsonu do souboru, vytvoří ho(soubor) pokud neexistuje
+    }
+
+    public void Delete(DailyRates dailyRates)
+    {
+        var all = LoadAll();//inicializuje list pro práci
+        all.RemoveAll(x => x.Id == dailyRates.Id);//z listu se všema zápisama smaže x co odpovídá svím datumem vybranému objektu nasmazaní
+        var json = JsonSerializer.Serialize(all, new JsonSerializerOptions { WriteIndented = true });
+        //objekt an json
+        File.WriteAllText(_filePath, json);
+        //komplet ho přepíše
     }
 }

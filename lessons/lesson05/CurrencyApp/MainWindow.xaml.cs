@@ -1,6 +1,7 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Media3D;
 using CurrencyApp.Models;
 using CurrencyApp.Services;
 
@@ -87,7 +88,7 @@ public partial class MainWindow : Window
             return;
 
         ShowRates(selectedDay);
-        // TODO: Part 2 – enable DeleteButton.
+        DeleteButton.IsEnabled = true;//pokud je něco vybráno tak se dá smazat
     }
 
     /// <summary>
@@ -113,13 +114,37 @@ public partial class MainWindow : Window
     /// Displays the list of rates in the UI.
     /// </summary>
     /// <param name="requestedDate">Part 2: date the user asked for; show a warning if the CNB returned another one.</param>
-    private void ShowRates(DailyRates rates, DateTime? requestedDate = null)
+    private void ShowRates(DailyRates rates, DateTime? requestedDate = null)//říká, tohle chci zobrazit
     {
         // TODO: Remember the rates in _displayedRates, fill DateTextBlock and RatesDataGrid.ItemsSource.
 
         _displayedRates = rates;
         DateTextBlock.Text = $"Rates ČNB for {rates.Date:dd.MM.yyyy}";
-        RatesDataGrid.ItemsSource = rates.Rates;
+
+        var age = DateTime.Today - rates.Date;
+
+        if (age.Days == 0)
+            InfoTextBlock.Text = $"Downloaded newest rates"; //stáří kurzů je 0, takže je to dnešní kurz
+        else if(age.Days == 1)
+            InfoTextBlock.Text = $"Downloaded rate is 1 day old"; //prsotě stáří kurzů, ...je to v zadání
+        else
+            InfoTextBlock.Text = $"Downloaded rate is {age.Days} days old"; //prsotě stáří kurzů, ...je to v zadání
+
+        if (requestedDate.HasValue && requestedDate.Value.Date != rates.Date.Date)
+        {
+            WarningTextBlock.Text = $"! ČNB could not return rates for {requestedDate.Value:dd.MM.yyyy}. Returned rates for {rates.Date:dd.MM.yyyy}";
+            WarningTextBlock.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            WarningTextBlock.Visibility = Visibility.Collapsed;
+        }
+
+
+
+
+
+        ApplyFilter();///to vypíše do gridu ty data, takže tohlejenom ověří jestli to třeba při "šipce" na jidný den nyvypíše vše s tím že v filtru je něco jinýho
 
 
         // TODO: Part 2 – fill InfoTextBlock (downloaded at, age, Id), WarningTextBlock and
@@ -238,7 +263,17 @@ public partial class MainWindow : Window
 
     private void DeleteButton_Click(object sender, RoutedEventArgs e)
     {
-        // TODO: Ask for confirmation (MessageBox) and delete the selected day by its Id.
+        var selectedDay = SavedDaysListBox.SelectedItem as DailyRates;//to co se vybere se jako objekt DailyRates uloží do selectedDay
+        if (selectedDay == null)
+            return;
+
+        var result = MessageBox.Show($"Are you sure you want to delete the rates for {selectedDay.Date:dd.MM.yyyy}?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+        if (result == MessageBoxResult.Yes)
+        {
+            _storage.Delete(selectedDay);
+            RefreshSavedDays();
+            DeleteButton.IsEnabled = false;
+        }
     }
 
     // ==================================================================
@@ -246,8 +281,8 @@ public partial class MainWindow : Window
     // ==================================================================
 
     private void FilterTextBox_TextChanged(object sender, TextChangedEventArgs e)
-    {
-        // TODO: Call ApplyFilter.
+    {//vyvolá se pokaždý co se zmení text
+        ApplyFilter();
     }
 
     /// <summary>
@@ -255,7 +290,18 @@ public partial class MainWindow : Window
     /// </summary>
     private void ApplyFilter()
     {
-        // TODO: Filter _displayedRates.Rates (LINQ) and set RatesDataGrid.ItemsSource.
+        if (_displayedRates is null) return;//pokud nejsou zobrazené kurzy nic se nestane
+
+        string filter = FilterTextBox.Text.Trim();//jinak vezme text z pole
+        //pro text FILTERTEXTBOXu
+        // .trim jenom odstraní mezery na začátku a na konci textu
+        if (string.IsNullOrEmpty(filter))//když je true vrátí true
+            RatesDataGrid.ItemsSource = _displayedRates.Rates;//není filtr, zobrazí se vše
+        else
+            RatesDataGrid.ItemsSource = _displayedRates.Rates
+                .Where(r => r.Code.Contains(filter, StringComparison.OrdinalIgnoreCase)//r - postupně každej objekt třídy CurrencyRate , code je vlastnost třídy CurrencyRate, druhej argument  v zívorce za contain je pravidlo pro porovnání, jakože to tady ignoruje velký malý písmena třeba
+                          || r.Country.Contains(filter, StringComparison.OrdinalIgnoreCase))
+                .ToList();
     }
 
     private void AmountTextBox_TextChanged(object sender, TextChangedEventArgs e)
