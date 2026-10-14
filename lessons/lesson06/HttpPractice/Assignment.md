@@ -235,22 +235,22 @@ Z Hoppscotche pošlete na každou adresu prázdné tělo `{}` s typem obsahu `ap
 | `/status/403` | **403 Forbiden**| **nic** |
 | `/status/404` | **404 Not Found** | **{ "error": "Not Found"}** |
 | `/status/500` | **500 Internal Server Error**| **{"type": "https://tools.ietf.org/html/rfc9110#section-15.6.1",  "title": "An error occurred while processing your request.""status":500, "detail": "Internal Server Error"}** |
-| `/status/XXX` (XXX zvolte z rozsahu 600–999) | **404 Not Found** | **nic** |
+| `/status/XXX` (XXX zvolte z rozsahu 600–999) | **400 Bad Request** | **{"error": "Unsupported status code","supportedCodes": [200,201,400,401,403,404,500]}** |
 
 Dále zapište:
 
-- Hodnota hlavičky `Location` u `/status/201`:
-- K čemu klientovi hlavička `Location` slouží:
-- Hodnota hlavičky `WWW-Authenticate` u `/status/401`:
-- K čemu klientovi hlavička `WWW-Authenticate` slouží:
-- Zvolený kód XXX:
-- Kódy, které server podle odpovědi podporuje:
+- Hodnota hlavičky `Location` u `/status/201`: **/status/201**
+- K čemu klientovi hlavička `Location` slouží: **říká kam poslat další request, URI vyžádaného objektu**
+- Hodnota hlavičky `WWW-Authenticate` u `/status/401`: **ApiKey**
+- K čemu klientovi hlavička `WWW-Authenticate` slouží: **jak se má klient autentizovat, ta hodnota uvádí co je požadováno**
+- Zvolený kód XXX: **505**
+- Kódy, které server podle odpovědi podporuje: **200, 201, 400, 401, 403, 404, 500**
 
 Vysvětlete vlastními slovy rozdíl mezi 401 a 403. Uveďte příklad situace, kdy by server měl vrátit 401, a příklad, kdy 403.
 
-- Rozdíl:
-- Příklad pro 401:
-- Příklad pro 403:
+- Rozdíl: **401 říká že nebylo poskytnuto přihlášení(žádné/chybné), narozdíl od toho 403 vrací to že člověk nemá oprávnění na svém přihlášení, napříkald API klíč, je to ohledně práv co člověk se svím "loginem" má**
+- Příklad pro 401: **nemám tam to apikey viz předchozí uloha, čili nejsem proveřenej**
+- Příklad pro 403: **prošel jsem přihlášením ale snažím se udělat akci kterou nemám povolenou**
 
 ## 10. GET /users
 
