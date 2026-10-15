@@ -300,15 +300,15 @@ Posílejte z Hoppscotche, hlavičky zadávejte v záložce *Headers*. U každé 
 
 | Varianta | Hlavička požadavku | Status kód | Tělo odpovědi | `WWW-Authenticate` |
 | --- | --- | --- | --- | --- |
-| a) | bez hlavičky `Api-Key` | | | |
-| b) | `Api-Key: secret123` | | | |
-| c) | `Api-Key: wrong` | | | |
-| d) | `api-key: secret123` (název hlavičky malými písmeny) | | | |
-| e) | `Api-Key: SECRET123` (hodnota velkými písmeny) | | | |
+| a) | bez hlavičky `Api-Key` | **401** | **nic** | **ApiKey** |
+| b) | `Api-Key: secret123` | **200** | **{  "message": "Secure Data",  "accessTime": "2026-10-15T13:15:03.1364665+00:00"}** | **hlavička tam není**|
+| c) | `Api-Key: wrong` | **401** | **nic** | **ApiKey**|
+| d) | `api-key: secret123` (název hlavičky malými písmeny) | **200** | **{ "message": "Secure Data",  "accessTime": "2026-10-15T13:16:56.3422536+00:00"}** | **hlavička tam není**|
+| e) | `Api-Key: SECRET123` (hodnota velkými písmeny) | **401** | **nic** | *ApiKey** |
 
 Z výsledků d) a e) odvoďte, kde záleží na velikosti písmen: v názvu hlavičky, nebo v její hodnotě?
 
-*Odpověď:*
+*Odpověď:* **na velikosti záleží v případě hodnoty, ale už ne u názvu**
 
 ## 13. POST /special-echo
 
@@ -316,32 +316,37 @@ Posílejte z Hoppscotche tělo `{"message": "test"}` s typem obsahu `application
 
 | Varianta | Hlavičky | Status kód | Text odpovědi |
 | --- | --- | --- | --- |
-| a) | `Special-Request: true` a `Custom-Username: username` | | |
-| b) | bez hlavičky `Special-Request` | | |
-| c) | bez hlavičky `Custom-Username` | | |
-| d) | `Special-Request: false` | | |
+| a) | `Special-Request: true` a `Custom-Username: username` | **200** | **{  "message": "test"}** |
+| b) | bez hlavičky `Special-Request` | **400** | **"Missing or invalid required headers: Special-Request=true and Custom-Username=username"**|
+| c) | bez hlavičky `Custom-Username` | **400** | **"Missing or invalid required headers: Special-Request=true and Custom-Username=username"** |
+| d) | `Special-Request: false` | **400** | **"Missing or invalid required headers: Special-Request=true and Custom-Username=username"** |
 
 Porovnejte odpovědi variant b)–d). Co se z nich klient dozví o tom, co má v požadavku opravit? Navrhněte text odpovědi, který by mu pomohl víc.
 
-- Co se klient dozví:
-- Návrh lepší odpovědi:
+- Co se klient dozví: **dozví se nemá správné hlavičky a nebo e jsou špatně(invalid) a napíše to jak to je příjímano**
+- Návrh lepší odpovědi: **u b to je missing a u d to je invalid takže by se to mělo rozlišit v tom a potom taky být konkrétní s tím jaká hlavička je ta missing/invalid**
 
 ## 14. PUT /users/{id}
 
 **a)** Pošlete na `/users/42` tělo `{"name": "Nové jméno"}`. Zapište status kód a tělo odpovědi.
 
-- Status kód:
+- Status kód: **200**
 - Tělo odpovědi:
 
 ```text
-
+{
+  "message": "User 42 updated successfully",
+  "updatedUser": {
+    "name": "Nové jméno"
+  }
+}
 ```
 
 **b)** Pošlete stejný požadavek na `/users/abc`. Zapište status kód a tělo odpovědi, porovnejte je s a) a výsledek vysvětlete.
 
-- Status kód:
-- Tělo odpovědi:
-- Vysvětlení:
+- Status kód: **404**
+- Tělo odpovědi: **nic**
+- Vysvětlení: **takové user id neexistuje**
 
 ## 15. DELETE /users/99
 
@@ -349,10 +354,10 @@ Zapište status kód a tělo odpovědi. Pak stejný požadavek pošlete podruhé
 
 | Volání | Status kód | Tělo odpovědi |
 | --- | --- | --- |
-| 1. | | |
-| 2. | | |
+| 1. | **200**| **{  "message": "User 99 deleted successfully"}** |
+| 2. | **200** | **{  "message": "User 99 deleted successfully"}** |
 
-*Odpověď:*
+*Odpověď:* **zdá se že server doopravdy uživatele nemaže a jen tvrdí že jo**
 
 ## 16. GET /data-temp
 
@@ -360,11 +365,11 @@ Pošlete `/data-temp` třikrát za sebou a zapište všechny tři hodnoty `id`. 
 
 | Volání | `id` |
 | --- | --- |
-| 1. | |
-| 2. | |
-| 3. | |
+| 1. | **ae0d300d-2e20-433b-af5f-e35cdcfb76d4**|
+| 2. | **af4e2e4e-ce14-48a5-9cc9-2f21d917fbed**|
+| 3. | **c4b9b833-ca3c-44e6-ae5e-e147727f0259**|
 
-*Odpověď:*
+*Odpověď:* **očividně je tam vdy jiné id a zpráva by měla být dočasná, nová instance = nové id**
 
 ## 17. GET na další adresy
 
@@ -372,21 +377,21 @@ Pošlete `/data-temp` třikrát za sebou a zapište všechny tři hodnoty `id`. 
 
 | Adresa | Status kód | `Allow` |
 | --- | --- | --- |
-| `/echo` | | |
-| `/special-echo` | | |
-| `/status/200` | | |
+| `/echo` | **405 Method Not Allowed**| **POST** |
+| `/special-echo` | **405 Method Not Allowed**| **POST**|
+| `/status/200` | **405 Method Not Allowed** | **POST** |
 
 **b)** Pošlete GET na `/neexistuje` a zapište status kód a tělo odpovědi.
 
-- Status kód:
-- Tělo odpovědi:
+- Status kód: **404**
+- Tělo odpovědi: **nic**
 
 **c)** Vysvětlete rozdíl mezi odpověďmi z a) a b).
 
-*Odpověď:*
+*Odpověď:* **U a) to je valid cesta ale se špatnou metodou, zatímco u b je nevalidní cesta, ...neexistuje**
 
 **d)** Porovnejte odpověď z b) s odpovědí z úkolu 4 (`/butterfly`). V čem se shodují, v čem se liší a co z toho vyčtete o tom, jestli adresa na serveru existuje?
 
-- Shoda:
-- Rozdíl:
-- Co z toho vyčtete:
+- Shoda: **vratí stejný status code**
+- Rozdíl: **`/butterfly` má obsah v těle odpovědi**
+- Co z toho vyčtete:**`/neexistije` opravdu neexistuje, zatímco `/butterfly` existuje a jenom vrací 404, dále by se dalo tvrdit že s error na `/butterfly` je zpracovám**
