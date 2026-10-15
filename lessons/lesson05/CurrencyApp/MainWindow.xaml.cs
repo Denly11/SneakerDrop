@@ -140,10 +140,6 @@ public partial class MainWindow : Window
             WarningTextBlock.Visibility = Visibility.Collapsed;
         }
 
-
-
-
-
         ApplyFilter();///to vypíše do gridu ty data, takže tohlejenom ověří jestli to třeba při "šipce" na jidný den nyvypíše vše s tím že v filtru je něco jinýho
 
 
@@ -199,13 +195,20 @@ public partial class MainWindow : Window
 
     private void TodayButton_Click(object sender, RoutedEventArgs e)
     {
-        // TODO: Select DateTime.Today.
         RatesDatePicker.SelectedDate = DateTime.Today;
     }
 
     private void RandomDayButton_Click(object sender, RoutedEventArgs e)
     {
         // TODO: Select a random workday within RandomDayMaxDaysBack days (Random.Shared).
+        var randomDayNumber = Random.Shared.Next(0, RandomDayMaxDaysBack+1);//+1 protože toho "MAX" se už nedotkne
+        DateTime randomDate = DateTime.Today.AddDays(-randomDayNumber);
+
+        while (!IsWorkday(randomDate))//ano je pracobní => falsen nic se nestane, ne není, je to víkend => true a odepíše se další den
+        {
+            randomDate = randomDate.AddDays(-1);
+        }
+        RatesDatePicker.SelectedDate = randomDate;
     }
 
     /// <summary>
