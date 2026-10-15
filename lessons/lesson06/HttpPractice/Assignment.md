@@ -258,18 +258,18 @@ U každé varianty zapište status kód a tělo odpovědi:
 
 | Varianta | Adresa | Status kód | Tělo odpovědi |
 | --- | --- | --- | --- |
-| a) | `/users?name=Jan` | | |
-| b) | `/users?name=Jana&age=25` | | |
-| c) | `/users?name=Jana&age=abc` | | |
-| d) | `/users` (bez parametrů) | | |
+| a) | `/users?name=Jan` | **200** | **"name":"Jan",  "age": 0,  "message": "User found"** |
+| b) | `/users?name=Jana&age=25` | **200** | **"name": "Jana",  "age": 25,  "message": "User found"** |
+| c) | `/users?name=Jana&age=abc` | **400** | **nic** |
+| d) | `/users` (bez parametrů) | **400** | **nic** |
 
 Který parametr je povinný, který volitelný a podle čeho jste to poznali? Jakou hodnotu dostane `age`, když ho nezadáte? Proč server ve variantě c) vrátil právě tento status kód?
 
-- Povinný parametr:
-- Volitelný parametr:
-- Podle čeho jste to poznali:
-- Hodnota `age`, když ho nezadáte:
-- Proč server ve variantě c) vrátil tento status kód:
+- Povinný parametr: **name**
+- Volitelný parametr: **age**
+- Podle čeho jste to poznali: **bez age jde poslat get, bez name to nejde, samostatné age v těle vrátí kód stavu 400**
+- Hodnota `age`, když ho nezadáte: **0**
+- Proč server ve variantě c) vrátil tento status kód: **požadavek byl v tvaru který není podporován**
 
 ## 11. GET /users se zvláštními znaky
 
@@ -277,21 +277,22 @@ Zadávejte adresy do adresního řádku prohlížeče s otevřenými DevTools. U
 
 | Varianta | Adresa | `name` v odpovědi |
 | --- | --- | --- |
-| a) | `<server>/users?name=Tom&Jerry` | |
-| b) | `<server>/users?name=Tom%26Jerry` | |
-| c) | `<server>/users?name=Jan Novák` (s mezerou a diakritikou) | |
+| a) | `<server>/users?name=Tom&Jerry` | **Tom** |
+| b) | `<server>/users?name=Tom%26Jerry` | **Tom&Jerry** |
+| c) | `<server>/users?name=Jan Novák` (s mezerou a diakritikou) | **Jan Novák** |
 
 U varianty c) zapište hodnotu *Request URL* z DevTools: jak prohlížeč adresu před odesláním upravil?
 
-- *Request URL*:
+- *Request URL*: **https://http-api-646982638495.europe-west1.run.app/users?name=Jan%20Nov%C3%A1k 
+/users?name=Jan%20Novák**
 
 Porovnejte jméno, které jste chtěli poslat, se jménem v odpovědi. Vysvětlete výsledek varianty a). Co znamenají zápisy `%26`, `%20` a `%C3%A1`? Jak byste do URL zapsali jméno `Anna Černá`?
-
+//*říká se tomu url code*
 - Vysvětlení varianty a):
-- `%26`:
-- `%20`:
-- `%C3%A1`:
-- `Anna Černá` v URL:
+- `%26`: **&**
+- `%20`: **mezera**
+- `%C3%A1`: **á**
+- `Anna Černá` v URL: **Anna%20%C4%8Dern%C3%A1**
 
 ## 12. GET /secure-data
 
