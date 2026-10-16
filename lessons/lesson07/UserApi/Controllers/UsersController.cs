@@ -18,7 +18,6 @@ public class UsersController(UserRepository repository) : ControllerBase
     {
         if (clientId != ValidClientId)
         {
-            Request.
             return Unauthorized(new { error = "Missing or invalid Client-Id header." });
         }
 
@@ -31,8 +30,24 @@ public class UsersController(UserRepository repository) : ControllerBase
         return Created($"/api/users/{user.Id}", user);
     }
 
-    private const string ApiKey = "Secret123";
+    private const string ValidApiKey = "Secret123";
 
     [HttpGet("{id:int}")]
-    public ActionResult<User> GetById([FromHeader(Name = "Api-Key")]  string? 
+    public ActionResult<User> GetById([FromHeader(Name = "ApiKey")] string? ApiKey, int Id)
+    {
+        if (ValidApiKey != ApiKey)
+        {
+            return Unauthorized(new { error = "Missing or invalid Api-Key header." });
+        }
+
+        var FoundUser = repository.GetById(Id);
+        if (FoundUser == null)
+        { 
+            return NotFound(new { error = "User not found." });
+        }
+        else
+        {
+            return Ok(FoundUser);
+        }
+    }
 }

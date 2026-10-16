@@ -27,4 +27,21 @@ public class UserRepository
         _users.Add(user);
         return user;
     }
+
+    public User? GetById(int id)
+    { 
+
+     var FoundUser =_users.FirstOrDefault(u => u.Id == id);
+
+        if(FoundUser == null)
+        {
+            return null;
+        }
+        else
+        {
+            return FoundUser;
+        }
+
+
+    }
 }
