@@ -9,4 +9,7 @@
   <Folder Name="/lessons/lesson05/">
     <Project Path="lessons/lesson05/CurrencyApp/CurrencyApp.csproj" />
   </Folder>
+  <Folder Name="/lessons/lesson07/">
+    <Project Path="lessons/lesson07/UserApi/UserApi.csproj" />
+  </Folder>
 </Solution>
