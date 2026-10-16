@@ -13,11 +13,12 @@ public class UsersController(UserRepository repository) : ControllerBase
 
     [HttpPost("create")]
     public ActionResult<User> Create(
-        [FromHeader(Name = "Client-Id")] string? clientId,
+        [FromHeader(Name = "Client-Id")] string? clientId,//sem se uložá ten klíč
         CreateUserRequest request)
     {
         if (clientId != ValidClientId)
         {
+            Request.
             return Unauthorized(new { error = "Missing or invalid Client-Id header." });
         }
 
@@ -29,4 +30,9 @@ public class UsersController(UserRepository repository) : ControllerBase
 
         return Created($"/api/users/{user.Id}", user);
     }
+
+    private const string ApiKey = "Secret123";
+
+    [HttpGet("{id:int}")]
+    public ActionResult<User> GetById([FromHeader(Name = "Api-Key")]  string? 
 }
