@@ -32,7 +32,7 @@ public class UsersController(UserRepository repository) : ControllerBase
 
     private const string ValidApiKey = "Secret123";
 
-    [HttpGet("{id:int}")]
+    [HttpGet("{id:int}")]//"adresa" konkrétního usera
     public ActionResult<User> GetById([FromHeader(Name = "ApiKey")] string? ApiKey, int Id)
     {
         if (ValidApiKey != ApiKey)
@@ -49,5 +49,19 @@ public class UsersController(UserRepository repository) : ControllerBase
         {
             return Ok(FoundUser);
         }
+    }
+
+    [HttpGet("search")]//tady to není adresa konkrétního uživatele, ale filtr
+
+    public ActionResult<List<User>> Search(string? name, int? min_age, int? max_age, int? limit)
+    {
+        List<User> SearchedUsers = new List<User>();
+
+        if (limit <= 0)
+            return BadRequest(new { error = "Limit has invalid value, must be greater than 0." });
+
+        SearchedUsers = repository.Search(name, min_age, max_age, limit);
+
+        return Ok(SearchedUsers);
     }
 }

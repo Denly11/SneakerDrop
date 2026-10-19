@@ -30,7 +30,6 @@ public class UserRepository
 
     public User? GetById(int id)
     { 
-
      var FoundUser =_users.FirstOrDefault(u => u.Id == id);
 
         if(FoundUser == null)
@@ -41,7 +40,31 @@ public class UserRepository
         {
             return FoundUser;
         }
+    }
 
+    public List<User> Search(string? name, int? min_age, int? max_age, int? limit)
+    {
+        IEnumerable<User> Query = _users;//.Where() vrací IEnumerable
+        if (name != null)
+        {
+            Query = Query.Where(n => n.Username.Contains(name, StringComparison.OrdinalIgnoreCase));//aby to bralo jak velká ta malá písmena tak tam místo jen == je .Contains()
+        }
 
+        if (min_age != null)
+        {
+            Query = Query.Where(m => m.Age >= min_age);
+        }
+
+        if (max_age != null)
+        {
+            Query = Query.Where(m => m.Age <= max_age);
+        }
+
+        if (limit != null && limit != 0)
+        {
+            Query = Query.Take(limit.Value);
+        }
+
+        return Query.ToList();
     }
 }
