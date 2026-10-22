@@ -67,4 +67,22 @@ public class UserRepository
 
         return Query.ToList();
     }
+
+    public User? Edit(int id, string username, string email, int age)
+    {
+
+        var FoundUser = GetById(id);
+
+        if (FoundUser == null)       
+            return null;     
+
+        var emailTaken = _users.Any(u => u.Id != id && string.Equals(u.Email, email, StringComparison.OrdinalIgnoreCase));//je shodný s nějakým emailem ale zároven to není zápis s naším id
+        if (emailTaken)
+            return null;
+
+        FoundUser.Username = username;
+        FoundUser.Email = email;
+        FoundUser.Age = age;
+        return FoundUser;
+    }
 }

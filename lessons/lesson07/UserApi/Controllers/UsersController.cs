@@ -59,6 +59,10 @@ public class UsersController(UserRepository repository) : ControllerBase
 
         if (limit <= 0)
             return BadRequest(new { error = "Limit has invalid value, must be greater than 0." });
+        if(min_age <= 0)
+            return BadRequest(new { error = "Minimum age has invalid value, must be greater than 0." }); 
+        if(max_age <= 0)
+            return BadRequest(new { error = "Maximum age has invalid value, must be greater than 0." }); 
 
         SearchedUsers = repository.Search(name, min_age, max_age, limit);
 
