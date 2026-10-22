@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Mvc;
 using UserApi.Data;
 using UserApi.Entities;
@@ -11,6 +12,7 @@ namespace UserApi.Controllers;
 public class UsersController(UserRepository repository) : ControllerBase
 {
     private const string ValidClientId = "Client123";
+    private const string ValidApiKey = "Secret123";
 
     [HttpPost("create")]
     public ActionResult<User> Create(
@@ -31,17 +33,16 @@ public class UsersController(UserRepository repository) : ControllerBase
         return Created($"/api/users/{user.Id}", user);
     }
 
-    private const string ValidApiKey = "Secret123";
 
     [HttpGet("{id:int}")]//"adresa" konkrétního usera
-    public ActionResult<User> GetById([FromHeader(Name = "ApiKey")] string? ApiKey, int Id)
+    public ActionResult<User> GetById([FromHeader(Name = "ApiKey")] string? apiKey, int id)
     {
-        if (ValidApiKey != ApiKey)
+        if (ValidApiKey != apiKey)
         {
             return Unauthorized(new { error = "Missing or invalid Api-Key header." });
         }
 
-        var FoundUser = repository.GetById(Id);
+        var FoundUser = repository.GetById(id);
         if (FoundUser == null)
         { 
             return NotFound(new { error = "User not found." });
@@ -63,5 +64,31 @@ public class UsersController(UserRepository repository) : ControllerBase
         SearchedUsers = repository.Search(name, min_age, max_age, limit);
 
         return Ok(SearchedUsers);
+    }
+
+    [HttpPut("{id:int}")]//s metodou mut to příjde na odkaz s id uživatele
+
+    public ActionResult<User> Edit([FromHeader(Name = "ApiKey")] string? ApiKey, int id, CreateUserRequest request)
+    {
+
+        if (ValidApiKey != ApiKey)
+        {
+            return Unauthorized(new { error = "Missing or invalid Api-Key header." });
+        }
+        var FoundUser = repository.GetById(id);
+        if (FoundUser == null)
+        {
+            return NotFound(new { error = "User not found." });
+        }
+
+        if (repository.EmailIsUsed(request.Email, id) == true)
+        {
+            return Conflict(new { error = "Email is already used by another user." });
+        }
+
+        FoundUser = repository.Edit(id,request);
+        
+
+        return Ok(FoundUser);
     }
 }

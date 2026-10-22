@@ -68,7 +68,7 @@ public class UserRepository
         return Query.ToList();
     }
 
-    public User? Edit(int id, string username, string email, int age)
+    public User? Edit(int id, CreateUserRequest request)
     {
 
         var FoundUser = GetById(id);
@@ -76,13 +76,30 @@ public class UserRepository
         if (FoundUser == null)       
             return null;     
 
-        var emailTaken = _users.Any(u => u.Id != id && string.Equals(u.Email, email, StringComparison.OrdinalIgnoreCase));//je shodný s nějakým emailem ale zároven to není zápis s naším id
+        var emailTaken = _users.Any(u => u.Id != id && string.Equals(u.Email, request.Email, StringComparison.OrdinalIgnoreCase));//je shodný s nějakým emailem ale zároven to není zápis s naším id
         if (emailTaken)
             return null;
 
-        FoundUser.Username = username;
-        FoundUser.Email = email;
-        FoundUser.Age = age;
+        FoundUser.Username = request.Username;
+        FoundUser.Email = request.Email;
+        FoundUser.Age = request.Age;
         return FoundUser;
+    }
+
+    public bool? EmailIsUsed(string email, int id)
+    {
+        if(email == null)
+        {
+            return null;
+        }  
+        var FoundUser = _users.FirstOrDefault(u => u.Id != id && string.Equals(u.Email, email, StringComparison.OrdinalIgnoreCase));
+        if (FoundUser == null)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 }
