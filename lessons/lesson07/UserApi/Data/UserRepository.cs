@@ -86,12 +86,8 @@ public class UserRepository
         return FoundUser;
     }
 
-    public bool? EmailIsUsed(string email, int id)
+    public bool EmailIsUsed(string email, int id)
     {
-        if(email == null)
-        {
-            return null;
-        }  
         var FoundUser = _users.FirstOrDefault(u => u.Id != id && string.Equals(u.Email, email, StringComparison.OrdinalIgnoreCase));
         if (FoundUser == null)
         {
