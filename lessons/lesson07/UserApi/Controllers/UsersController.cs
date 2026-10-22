@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using UserApi.Data;
 using UserApi.Entities;
@@ -53,16 +54,11 @@ public class UsersController(UserRepository repository) : ControllerBase
 
     [HttpGet("search")]//tady to není adresa konkrétního uživatele, ale filtr
 
-    public ActionResult<List<User>> Search(string? name, int? min_age, int? max_age, int? limit)
-    {
+    public ActionResult<List<User>> Search(string? name, [Range(1, int.MaxValue)] int? min_age, [Range(1, int.MaxValue)] int? max_age, [Range(1, int.MaxValue)] int? limit)
+    {//[Range(1, int.MaxValue)] říká že hodnota musí být od 1 do max hodnoty intu
+        //tohle je metadatový záznam pak to jde ještě reflexí a to je jinej zápis
+        
         List<User> SearchedUsers = new List<User>();
-
-        if (limit <= 0)
-            return BadRequest(new { error = "Limit has invalid value, must be greater than 0." });
-        if(min_age <= 0)
-            return BadRequest(new { error = "Minimum age has invalid value, must be greater than 0." }); 
-        if(max_age <= 0)
-            return BadRequest(new { error = "Maximum age has invalid value, must be greater than 0." }); 
 
         SearchedUsers = repository.Search(name, min_age, max_age, limit);
 
