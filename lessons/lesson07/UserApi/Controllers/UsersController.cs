@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Mvc;
 using UserApi.Data;
+using UserApi.Dtos;
 using UserApi.Entities;
 using UserApi.Models;
 
@@ -9,10 +10,18 @@ namespace UserApi.Controllers;
 
 [ApiController]
 [Route("api/users")]
-public class UsersController(UserRepository repository) : ControllerBase
+public class UsersController : ControllerBase
 {
     private const string ValidClientId = "Client123";
     private const string ValidApiKey = "Secret123";
+    private readonly UserRepository _repository;
+    private readonly ProductRepository _productRepository;
+
+    public UsersController(UserRepository repository, ProductRepository productRepository)
+    {
+        _repository = repository;
+        _productRepository = productRepository;
+    }
 
     [HttpPost("create")]
     public ActionResult<User> Create(
@@ -24,7 +33,7 @@ public class UsersController(UserRepository repository) : ControllerBase
             return Unauthorized(new { error = "Missing or invalid Client-Id header." });
         }
 
-        var user = repository.Add(request);
+        var user = _repository.Add(request);
         if (user is null)
         {
             return Conflict(new { error = "Email is already used by another user." });
@@ -42,7 +51,7 @@ public class UsersController(UserRepository repository) : ControllerBase
             return Unauthorized(new { error = "Missing or invalid Api-Key header." });
         }
 
-        var FoundUser = repository.GetById(id);
+        var FoundUser = _repository.GetById(id);
         if (FoundUser == null)
         { 
             return NotFound(new { error = "User not found." });
@@ -61,7 +70,7 @@ public class UsersController(UserRepository repository) : ControllerBase
         
         List<User> SearchedUsers = new List<User>();
 
-        SearchedUsers = repository.Search(name, min_age, max_age, limit);
+        SearchedUsers = _repository.Search(name, min_age, max_age, limit);
 
         return Ok(SearchedUsers);
     }
@@ -75,20 +84,27 @@ public class UsersController(UserRepository repository) : ControllerBase
         {
             return Unauthorized(new { error = "Missing or invalid Api-Key header." });
         }
-        var FoundUser = repository.GetById(id);
+        var FoundUser = _repository.GetById(id);
         if (FoundUser == null)
         {
             return NotFound(new { error = "User not found." });
         }
 
-        if (repository.EmailIsUsed(request.Email, id) == true)
+        if (_repository.EmailIsUsed(request.Email, id) == true)
         {
             return Conflict(new { error = "Email is already used by another user." });
         }
 
-        FoundUser = repository.Edit(id,request);
+        FoundUser = _repository.Edit(id,request);
         
 
         return Ok(FoundUser);
+    }
+
+    [HttpPost("{id:int}/products")]
+    public ActionResult CreateUserProduct(int userId, CreateProductRequest request )
+    {
+        _productRepository.CreateProduct(userId, request);
+        return Ok();
     }
 }
