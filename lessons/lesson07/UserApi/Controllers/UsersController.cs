@@ -16,12 +16,12 @@ public class UsersController : ControllerBase
     private const string ValidClientId = "Client123";
     private const string ValidApiKey = "Secret123";
     private const string ValidAdmin = "admin123";
-    private readonly UserRepository _repository;
+    private readonly UserRepository _userRepository;
     private readonly ProductRepository _productRepository;
 
     public UsersController(UserRepository repository, ProductRepository productRepository)
     {
-        _repository = repository;
+        _userRepository = repository;
         _productRepository = productRepository;
     }
 
@@ -35,7 +35,7 @@ public class UsersController : ControllerBase
             return Unauthorized(new { error = "Missing or invalid Client-Id header." });
         }
 
-        var user = _repository.Add(request);
+        var user = _userRepository.Add(request);
         if (user is null)
         {
             return Conflict(new { error = "Email is already used by another user." });
@@ -53,7 +53,7 @@ public class UsersController : ControllerBase
             return Unauthorized(new { error = "Missing or invalid Api-Key header." });
         }
 
-        var FoundUser = _repository.GetById(id);
+        var FoundUser = _userRepository.GetById(id);
         if (FoundUser == null)
         { 
             return NotFound(new { error = "User not found." });
@@ -72,7 +72,7 @@ public class UsersController : ControllerBase
         
         List<User> SearchedUsers = new List<User>();
 
-        SearchedUsers = _repository.Search(name, min_age, max_age, limit);
+        SearchedUsers = _userRepository.Search(name, min_age, max_age, limit);
 
         return Ok(SearchedUsers);
     }
@@ -86,18 +86,18 @@ public class UsersController : ControllerBase
         {
             return Unauthorized(new { error = "Missing or invalid Api-Key header." });
         }
-        var FoundUser = _repository.GetById(id);
+        var FoundUser = _userRepository.GetById(id);
         if (FoundUser == null)
         {
             return NotFound(new { error = "User not found." });
         }
 
-        if (_repository.EmailIsUsed(request.Email, id) == true)
+        if (_userRepository.EmailIsUsed(request.Email, id) == true)
         {
             return Conflict(new { error = "Email is already used by another user." });
         }
 
-        FoundUser = _repository.Edit(id,request);
+        FoundUser = _userRepository.Edit(id,request);
         
 
         return Ok(FoundUser);
@@ -116,13 +116,13 @@ public class UsersController : ControllerBase
             return StatusCode(403, new { error = "Invalid Admin header." });
         }
 
-        var user = _repository.GetById(id);
+        var user = _userRepository.GetById(id);
         if (user == null)
         {
             return NotFound(new { error = "User not found." });
         }
 
-        _repository.Delete(id);
+        _userRepository.Delete(id);
 
         return NoContent();
     }
@@ -135,7 +135,7 @@ public class UsersController : ControllerBase
             return Unauthorized(new { error = "Missing or invalid Api-Key header." });//401
         }
 
-        var user = _repository.GetById(userId);
+        var user = _userRepository.GetById(userId);
         if(user == null)
         {
             return NotFound(new { error = "User not found." });//404
@@ -153,7 +153,7 @@ public class UsersController : ControllerBase
         {
             return StatusCode(500);
         }
-        var user = _repository.GetById(userId);
+        var user = _userRepository.GetById(userId);
         if (user == null)
         {
             return NotFound(new { error = "User not found." });
@@ -162,5 +162,36 @@ public class UsersController : ControllerBase
         var products = _productRepository.GetUserProductList(userId, min_price, max_price, sort);
         return Ok(products);
     }
+    
+    [HttpPut("{userId:int}/products/{productId:int}")]
+    public ActionResult<Product> Edit([FromHeader(Name = "ApiKey")] string? ApiKey, int userId, int productId, CreateProductRequest request)
+    {
+        if (ValidApiKey != ApiKey)
+        {
+            return Unauthorized(new { error = "Missing or invalid Api-Key header." });
+        }
 
+        var user = _userRepository.GetById(userId);
+        if (user == null)
+        {
+            return NotFound(new { error = "User does not exist." });
+        }
+
+        var product = _productRepository.GetById(productId);
+        if(product == null)
+        {
+            return NotFound(new { error = "Product not found." });
+        }
+
+        if(product.UserId != userId)
+        {
+            return NotFound(new { error = "Invalid user id or product id. Ids do not match." });
+        }
+
+
+
+        product = _productRepository.Edit(productId, request);
+
+        return Ok(product);
+    }
 }

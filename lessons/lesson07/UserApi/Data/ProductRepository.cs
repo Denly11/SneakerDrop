@@ -50,4 +50,34 @@ public class ProductRepository
 
         return Query.ToList();
     }
+
+    public Product? Edit(int id, CreateProductRequest request)
+    {
+        var FoundProduct = GetById(id);
+
+        if(FoundProduct == null)
+        {
+            return null;
+        }
+
+        FoundProduct.Name = request.Name;
+        FoundProduct.Price = request.Price;
+        FoundProduct.Category = request.Category;
+
+        return FoundProduct;
+    }
+
+    public Product? GetById(int id)
+    {
+        var FoundProduct = _products.FirstOrDefault(n => n.Id == id);
+
+        if(FoundProduct == null)
+        { 
+            return null;
+        }
+        else
+        {
+            return FoundProduct;
+        }
+    }
 }
