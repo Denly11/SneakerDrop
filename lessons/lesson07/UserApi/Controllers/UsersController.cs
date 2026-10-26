@@ -118,4 +118,19 @@ public class UsersController : ControllerBase
         var product = _productRepository.CreateProduct(userId, request);
         return Created($"/api/users/{userId}/products/{product.Id}", product);
     }
+
+    [HttpGet("{userId:int}/products")]
+
+    public ActionResult ShowUserProductList(int userId, decimal? min_price, decimal? max_price, string? sort)
+    {
+        var user = _repository.GetById(userId);
+        if (user == null)
+        {
+            return NotFound(new { error = "User not found." });
+        
+        }
+        var products = _productRepository.GetProductsByUserId(userId, min_price, max_price, sort);
+        return Ok(products);
+    }
+
 }
