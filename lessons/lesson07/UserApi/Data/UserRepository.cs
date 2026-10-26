@@ -98,4 +98,16 @@ public class UserRepository
             return true;
         }
     }
+
+    public bool Delete(int id)
+    {
+        var user = GetById(id);
+        if (user == null)
+        {
+            return false;
+        }
+
+        _users.Remove(user);
+        return true;
+    }
 }

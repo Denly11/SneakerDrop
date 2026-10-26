@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using UserApi.Data;
 using UserApi.Dtos;
@@ -14,6 +15,7 @@ public class UsersController : ControllerBase
 {
     private const string ValidClientId = "Client123";
     private const string ValidApiKey = "Secret123";
+    private const string ValidAdmin = "admin123";
     private readonly UserRepository _repository;
     private readonly ProductRepository _productRepository;
 
@@ -101,6 +103,30 @@ public class UsersController : ControllerBase
         return Ok(FoundUser);
     }
 
+    [HttpDelete("{id:int}")]
+    public ActionResult Delete([FromHeader(Name = "Admin")] string? admin, int id)
+    {
+        if (admin == null)
+        {
+            return Unauthorized(new { error = "Missing Admin header." });
+        }
+
+        if (admin != ValidAdmin)
+        {
+            return StatusCode(403, new { error = "Invalid Admin header." });
+        }
+
+        var user = _repository.GetById(id);
+        if (user == null)
+        {
+            return NotFound(new { error = "User not found." });
+        }
+
+        _repository.Delete(id);
+
+        return NoContent();
+    }
+
     [HttpPost("{userId:int}/products")]
     public ActionResult CreateUserProduct([FromHeader(Name = "ApiKey")] string? apiKey, int userId, CreateProductRequest request )
     {
@@ -121,15 +147,19 @@ public class UsersController : ControllerBase
 
     [HttpGet("{userId:int}/products")]
 
-    public ActionResult ShowUserProductList(int userId, decimal? min_price, decimal? max_price, string? sort)
+    public ActionResult ShowUserProductList(int userId, decimal? min_price, decimal? max_price, [AllowedValues("asc", "desc")]string? sort)
     {
+        if(userId == 999)
+        {
+            return StatusCode(500);
+        }
         var user = _repository.GetById(userId);
         if (user == null)
         {
             return NotFound(new { error = "User not found." });
         
         }
-        var products = _productRepository.GetProductsByUserId(userId, min_price, max_price, sort);
+        var products = _productRepository.GetUserProductList(userId, min_price, max_price, sort);
         return Ok(products);
     }
 

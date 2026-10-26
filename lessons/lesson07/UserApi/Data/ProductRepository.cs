@@ -22,11 +22,13 @@ public class ProductRepository
         return product;
     }
 
-    internal object GetProductsByUserId(int userId, decimal? min_price, decimal? max_price, string sort)
+    internal List<Product> GetUserProductList(int userId, decimal? min_price, decimal? max_price, string? sort)
     {
         IEnumerable<Product> Query = _products;
 
-        if( min_price != null)
+        Query = Query.Where(n => n.UserId == userId);
+
+        if ( min_price != null)
         { 
             Query = Query.Where(n => n.Price >= min_price);
         }
@@ -36,7 +38,7 @@ public class ProductRepository
             Query = Query.Where(n => n.Price <= max_price);
         }
 
-        if(sort == "acs")
+        if(sort == "asc")
         {
             Query = Query.OrderBy(n => n.Price);//nativní fungování OrderBy
         }
