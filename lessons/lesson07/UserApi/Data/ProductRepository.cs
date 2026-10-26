@@ -80,4 +80,16 @@ public class ProductRepository
             return FoundProduct;
         }
     }
+
+    internal bool Delete(int id)
+    {
+        var product = GetById(id);
+        if (product == null)
+        {
+            return false;
+        }
+
+        _products.Remove(product);
+        return true;
+    }
 }

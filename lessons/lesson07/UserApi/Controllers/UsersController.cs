@@ -188,10 +188,45 @@ public class UsersController : ControllerBase
             return NotFound(new { error = "Invalid user id or product id. Ids do not match." });
         }
 
-
-
         product = _productRepository.Edit(productId, request);
 
         return Ok(product);
     }
+
+    [HttpDelete("{userId:int}/products/{productId:int}")]
+    
+    public ActionResult Delete([FromHeader(Name = "Admin")] string? admin, int userId, int productId)
+    {
+        if (admin == null)
+        {
+            return Unauthorized(new { error = "Missing Admin header." });
+        }
+
+        if (admin != ValidAdmin)
+        {
+            return StatusCode(403, new { error = "Invalid Admin header." });
+        }
+
+        var user = _userRepository.GetById(userId);
+        if (user == null)
+        {
+            return NotFound(new { error = "User does not exist." });
+        }
+
+        var product = _productRepository.GetById(productId);
+        if (product == null)
+        {
+            return NotFound(new { error = "Product not found." });
+        }
+
+        if (product.UserId != userId)
+        {
+            return NotFound(new { error = "Invalid user id or product id. Ids do not match." });
+        }
+
+        _productRepository.Delete(productId);
+        return Ok(new { message = "Product deleted successfully." });
+    }
+
+        
 }
