@@ -101,10 +101,21 @@ public class UsersController : ControllerBase
         return Ok(FoundUser);
     }
 
-    [HttpPost("{id:int}/products")]
-    public ActionResult CreateUserProduct(int userId, CreateProductRequest request )
+    [HttpPost("{userId:int}/products")]
+    public ActionResult CreateUserProduct([FromHeader(Name = "ApiKey")] string? apiKey, int userId, CreateProductRequest request )
     {
-        _productRepository.CreateProduct(userId, request);
-        return Ok();
+        if (ValidApiKey != apiKey)
+        {
+            return Unauthorized(new { error = "Missing or invalid Api-Key header." });//401
+        }
+
+        var user = _repository.GetById(userId);
+        if(user == null)
+        {
+            return NotFound(new { error = "User not found." });//404
+        }
+
+        var product = _productRepository.CreateProduct(userId, request);
+        return Created($"/api/users/{userId}/products/{product.Id}", product);
     }
 }
