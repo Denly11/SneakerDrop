@@ -225,7 +225,8 @@ public class UsersController : ControllerBase
         }
 
         _productRepository.Delete(productId);
-        return Ok(new { message = "Product deleted successfully." });
+        return NoContent();
+       
     }
 
         
