@@ -1,0 +1,95 @@
+@baseUrl = http://localhost:5058
+
+### Testovací data – spouštějte postupně odshora (ID se generují od 1)
+
+### Parkoviště 1 – nonstop, s nabíjením
+POST {{baseUrl}}/api/parkinglots
+Content-Type: application/json
+
+{
+  "name": "Centrum",
+  "capacity": 50,
+  "hourlyRateCzk": 40,
+  "hasEvCharging": true
+}
+
+### Parkoviště 2 – s otevírací dobou, bez nabíjení, malá kapacita
+POST {{baseUrl}}/api/parkinglots
+Content-Type: application/json
+
+{
+  "name": "Nádraží",
+  "capacity": 3,
+  "hourlyRateCzk": 25.5,
+  "hasEvCharging": false,
+  "openingHours": {
+    "open": "06:00",
+    "close": "22:00"
+  }
+}
+
+### Parkoviště 3 – s otevírací dobou, s nabíjením
+POST {{baseUrl}}/api/parkinglots
+Content-Type: application/json
+
+{
+  "name": "Letiště P1",
+  "capacity": 200,
+  "hourlyRateCzk": 80,
+  "hasEvCharging": true,
+  "openingHours": {
+    "open": "05:00",
+    "close": "23:30"
+  }
+}
+
+### Místo na parkovišti 1
+POST {{baseUrl}}/api/parkinglots/1/spots
+Content-Type: application/json
+
+{
+  "label": "A-001",
+  "type": 0
+}
+
+### Místo na parkovišti 1 – malé písmeno se uloží jako A-002
+POST {{baseUrl}}/api/parkinglots/1/spots
+Content-Type: application/json
+
+{
+  "label": "a-002",
+  "type": 0
+}
+
+### Elektro místo na parkovišti 1
+POST {{baseUrl}}/api/parkinglots/1/spots
+Content-Type: application/json
+
+{
+  "label": "E-001",
+  "type": 1
+}
+
+### Místo na parkovišti 2
+POST {{baseUrl}}/api/parkinglots/2/spots
+Content-Type: application/json
+
+{
+  "label": "B-001",
+  "type": 0
+}
+
+### Místo na parkovišti 2
+POST {{baseUrl}}/api/parkinglots/2/spots
+Content-Type: application/json
+
+{
+  "label": "B-002",
+  "type": 0
+}
+
+### Detail parkoviště 1 (freeSpots = 47)
+GET {{baseUrl}}/api/parkinglots/1
+
+### Detail parkoviště 2 (freeSpots = 1)
+GET {{baseUrl}}/api/parkinglots/2
