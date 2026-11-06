@@ -226,8 +226,8 @@ public class UsersController : ControllerBase
 
         _productRepository.Delete(productId);
         return NoContent();
-       
+        //return Ok(new { message = "Product deleted successfully." }); vracelo špatný kod
     }
 
-        
+
 }

@@ -12,7 +12,7 @@
   <Folder Name="/lessons/lesson07/">
     <Project Path="lessons/lesson07/UserApi/UserApi.csproj" />
   </Folder>
-  <Folder Name="/lessons/lesson08/">
+  <Folder Name="/lessons/lesson08/" Id="210a3764-5d34-cb4c-8629-305e84eced93">
     <Project Path="lessons/lesson08/ParkingApi/ParkingApi.csproj" />
   </Folder>
 </Solution>
