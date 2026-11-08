@@ -1,5 +1,5 @@
+using UserApi.Dtos;
 using UserApi.Entities;
-using UserApi.Models;
 
 namespace UserApi.Data;
 

@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using UserApi.Data;
 using UserApi.Dtos;
 using UserApi.Entities;
-using UserApi.Models;
 
 namespace UserApi.Controllers;
 

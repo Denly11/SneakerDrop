@@ -9,6 +9,7 @@ builder.Services.AddSingleton<ParkingLotRepository>();
 builder.Services.AddSingleton<ParkingSpotRepository>();
 builder.Services.AddScoped<ParkingLotService>();
 builder.Services.AddSingleton<ParkingPassRepository>();
+builder.Services.AddScoped<ParkingPassService>();
 builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy => policy
         .AllowAnyOrigin()

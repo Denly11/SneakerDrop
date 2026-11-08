@@ -6,7 +6,7 @@ using ParkingApi.Repositories;
 
 namespace ParkingApi.Services;
 
-public class ParkingLotService
+public class ParkingLotService  
 {
     private readonly ParkingLotRepository _parkingLotRepository;
     private readonly ParkingSpotRepository _parkingSpotRepository;
@@ -111,7 +111,7 @@ public class ParkingLotService
             Capacity = parkingLot.Capacity,
             HourlyRateCzk = parkingLot.HourlyRateCzk,
             HasEvCharging = parkingLot.HasEvCharging,
-            OpeningHours = parkingLot.OpeningHours is null ? null : new OpeningHoursResponse
+            OpeningHours = parkingLot.OpeningHours is null ? null : new OpeningHoursResponse//protže pokud není tak se otevárací hodiny nebudou zobrazovat
             {
                 Open = parkingLot.OpeningHours.Open.ToString(ParkingLotConstraints.OpeningHoursTimeFormat),
                 Close = parkingLot.OpeningHours.Close.ToString(ParkingLotConstraints.OpeningHoursTimeFormat)

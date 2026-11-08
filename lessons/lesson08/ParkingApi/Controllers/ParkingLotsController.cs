@@ -22,8 +22,8 @@ public class ParkingLotsController : ControllerBase
         try
         {
             var result = _parkingLotService.CreateParkingLot(req);
-            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
-        }
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);// tohle dohromady vytvoří odkaz na to parkoviště
+        }//tak prostě protože tam to getbyid už bylo kvůli jinému bodu zadáná tak podle REST API konvencí se tam má dát metoda pro vypsání vytvořeného prvku
         catch (HandledException ex)
         {
             return Conflict(new { error = ex.Message });
