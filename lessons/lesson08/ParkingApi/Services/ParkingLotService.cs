@@ -17,7 +17,7 @@ public class ParkingLotService
         _parkingSpotRepository = parkingSpotRepository;
     }
 
-    public ParkingLotResponse CreateParkingLot(ParkingLotRequest req)
+    public ParkingLotResponse CreateParkingLot(ParkingLotRequest req)//nevidím .Add jeom create
     {
         if (_parkingLotRepository.GetParkingLot(req.Name) is not null)
         {
@@ -31,7 +31,7 @@ public class ParkingLotService
 
     public ParkingLotResponse? GetParkingLotById(int id)
     {
-        var parkingLot = _parkingLotRepository.GetParkingLot(id);
+        var parkingLot = _parkingLotRepository.GetParkingLot(id);//nevidím tu reálnou prái s daty, jeom tohle udělám
 
         if (parkingLot is null)
         {

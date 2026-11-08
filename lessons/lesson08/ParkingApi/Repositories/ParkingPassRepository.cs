@@ -18,8 +18,8 @@ public class ParkingPassRepository
             ValidFrom = req.ValidFrom!.Value,
             DurationMonths = (int)req.DurationMonths!.Value,
             RequiresCharging = req.RequiresCharging!.Value,
-            ValidTo = validTo,
-            PriceCzk = priceCzk,
+            ValidTo = validTo,//<- metoda
+            PriceCzk = priceCzk,//<- metoda
             CreatedAt = DateTime.UtcNow
         };
         _parkingPasses.Add(parkingPass);

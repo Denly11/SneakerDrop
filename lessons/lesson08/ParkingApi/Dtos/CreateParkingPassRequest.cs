@@ -4,7 +4,7 @@ using ParkingApi.Constants;
 
 namespace ParkingApi.Dtos;
 
-public class CreateParkingPassRequest
+public class CreateParkingPassRequest : IValidatableObject
 {
     [Required]
     public int? ParkingLotId { get; set; }
@@ -27,4 +27,5 @@ public class CreateParkingPassRequest
     [Required]
     public bool? RequiresCharging { get; set; }
 
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext) => throw new NotImplementedException();
 }
