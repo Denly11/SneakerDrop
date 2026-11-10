@@ -12,7 +12,16 @@
   <Folder Name="/lessons/lesson07/">
     <Project Path="lessons/lesson07/UserApi/UserApi.csproj" />
   </Folder>
-  <Folder Name="/lessons/lesson08/" Id="210a3764-5d34-cb4c-8629-305e84eced93">
+  <Folder Name="/lessons/lesson08.5/">
+    <File Path="lessons/lesson08/SneakerDrop/SneakerDrop.md" />
+  </Folder>
+  <Folder Name="/lessons/lesson08.5/Controllers/" />
+  <Folder Name="/lessons/lesson08.5/Models/" />
+  <Folder Name="/lessons/lesson08.5/Models/Dtos/" />
+  <Folder Name="/lessons/lesson08.5/Models/Entities/" />
+  <Folder Name="/lessons/lesson08.5/Repositories/" />
+  <Folder Name="/lessons/lesson08.5/Services/" />
+  <Folder Name="/lessons/lesson08/">
     <Project Path="lessons/lesson08/ParkingApi/ParkingApi.csproj" />
   </Folder>
 </Solution>
