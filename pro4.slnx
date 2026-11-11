@@ -14,13 +14,8 @@
   </Folder>
   <Folder Name="/lessons/lesson08.5/">
     <File Path="lessons/lesson08/SneakerDrop/SneakerDrop.md" />
+    <Project Path="SneakerDrop/SneakerDrop.csproj" Id="5e243adf-4fce-4d40-954c-dd586b059b39" />
   </Folder>
-  <Folder Name="/lessons/lesson08.5/Controllers/" />
-  <Folder Name="/lessons/lesson08.5/Models/" />
-  <Folder Name="/lessons/lesson08.5/Models/Dtos/" />
-  <Folder Name="/lessons/lesson08.5/Models/Entities/" />
-  <Folder Name="/lessons/lesson08.5/Repositories/" />
-  <Folder Name="/lessons/lesson08.5/Services/" />
   <Folder Name="/lessons/lesson08/">
     <Project Path="lessons/lesson08/ParkingApi/ParkingApi.csproj" />
   </Folder>
